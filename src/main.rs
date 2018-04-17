@@ -13,6 +13,8 @@ const HASH_BYTES_SIZE: usize = 20;
 struct Blockchain {
     timestamp: i64,
     data: i32,
+    /* declare an array of bytes instead of a sha1::Digest
+       in order to prevent custom serialization definition */
     previous: [u8; HASH_BYTES_SIZE],
 }
 
