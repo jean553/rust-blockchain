@@ -5,6 +5,8 @@ extern crate bincode;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 
+use std::io::stdin;
+
 #[derive(Serialize)]
 struct Block {
     timestamp: i64,
@@ -24,22 +26,28 @@ fn main() {
 
     println!("Genesis block has been generated.");
 
-    println!("\nChoices:");
-    println!("1. Add a block");
-    println!("2. Update blockchain");
+    loop {
 
-    /* add one block to the ledger: serialize the previous object into raw bytes,
-       in order to generate a new hash digest from those bytes,
-       and use that digest as a previous field content for the new block */
+        println!("\nChoices:");
+        println!("1. Add a block");
+        println!("2. Update blockchain");
 
-    let previous_bytes = bincode::serialize(&chain).unwrap();
-    let previous_digest = sha1::Sha1::from(previous_bytes).digest().bytes();
+        let mut input = String::new();
+        stdin().read_line(&mut input).expect("cannot read input");
 
-    let _chain = Block {
-        timestamp: time::now_utc().to_timespec().sec,
-        data: 10,
-        previous: previous_digest,
-    };
+        let choice = input.as_bytes()[0];
+        if choice == 0x31 {
 
-    println!("One block has been added to the ledger.");
+            let previous_bytes = bincode::serialize(&chain).unwrap();
+            let previous_digest = sha1::Sha1::from(previous_bytes).digest().bytes();
+
+            let _chain = Block {
+                timestamp: time::now_utc().to_timespec().sec,
+                data: 10,
+                previous: previous_digest,
+            };
+
+            println!("One block has been added to the ledger.");
+        }
+    }
 }
