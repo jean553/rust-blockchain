@@ -2,6 +2,10 @@
 
 A very simple blockchain in Rust.
 
+## In progress
+
+ * multiple-nodes (synchronize chain from other nodes chains)
+
 ## Table of content
 
  * Dependencies
