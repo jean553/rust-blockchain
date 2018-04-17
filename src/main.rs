@@ -29,16 +29,25 @@ impl Blockchain {
         let bytes = bincode::serialize(&self).unwrap();
         let digest = sha1::Sha1::from(bytes).digest().bytes();
 
-        self.timestamp = time::now_utc().to_timespec().sec;
+        self.timestamp = get_current_timestamp();
         self.data = data;
         self.previous = digest;
     }
 }
 
+/// Refactor the current timestamp generation.
+///
+/// Returns:
+///
+/// the current timestamp
+fn get_current_timestamp() -> i64 {
+    time::now_utc().to_timespec().sec
+}
+
 fn main() {
 
     let mut chain = Blockchain {
-        timestamp: time::now_utc().to_timespec().sec,
+        timestamp: get_current_timestamp(),
         data: 0,
         previous: [0; 20],
     };
