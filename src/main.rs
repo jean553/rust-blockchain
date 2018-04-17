@@ -14,6 +14,27 @@ struct Blockchain {
     previous: [u8; 20],
 }
 
+impl Blockchain {
+
+    /// Adds a block into the blockchain. Encrypt the current block, stores it as the previous block, update the timestamp and the data.
+    ///
+    /// Args:
+    ///
+    /// `data` - data to insert into the new block.
+    fn add_block(
+        &mut self,
+        data: i32,
+    ) {
+
+        let bytes = bincode::serialize(&self).unwrap();
+        let digest = sha1::Sha1::from(bytes).digest().bytes();
+
+        self.timestamp = time::now_utc().to_timespec().sec;
+        self.data = data;
+        self.previous = digest;
+    }
+}
+
 fn main() {
 
     let mut chain = Blockchain {
@@ -36,14 +57,8 @@ fn main() {
         let choice = input.as_bytes()[0];
         if choice == 0x31 {
 
-            let previous_bytes = bincode::serialize(&chain).unwrap();
-            let previous_digest = sha1::Sha1::from(previous_bytes).digest().bytes();
-
-            chain = Blockchain {
-                timestamp: time::now_utc().to_timespec().sec,
-                data: 10,
-                previous: previous_digest,
-            };
+            /* TODO: should take the user input, use 10 as an example */
+            chain.add_block(10);
 
             println!("One block has been added to the ledger.");
         }
