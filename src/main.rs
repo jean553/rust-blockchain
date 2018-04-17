@@ -71,8 +71,13 @@ fn main() {
 
         if choice == ADD_BLOCK_CHOICE {
 
-            /* TODO: should take the user input, use 10 as an example */
-            chain.add_block(10);
+            println!("Data of the block:");
+
+            let mut input = String::new();
+            stdin().read_line(&mut input).expect("cannot read input");
+
+            let data: i32 = input.trim().parse().unwrap();
+            chain.add_block(data);
 
             println!("One block has been added to the ledger.");
         }
