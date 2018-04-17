@@ -7,11 +7,13 @@ extern crate serde;
 
 use std::io::stdin;
 
+const HASH_BYTES_SIZE: usize = 20;
+
 #[derive(Serialize)]
 struct Blockchain {
     timestamp: i64,
     data: i32,
-    previous: [u8; 20],
+    previous: [u8; HASH_BYTES_SIZE],
 }
 
 impl Blockchain {
@@ -49,7 +51,7 @@ fn main() {
     let mut chain = Blockchain {
         timestamp: get_current_timestamp(),
         data: 0,
-        previous: [0; 20],
+        previous: [0; HASH_BYTES_SIZE],
     };
 
     println!("Genesis block has been generated.");
@@ -64,7 +66,10 @@ fn main() {
         stdin().read_line(&mut input).expect("cannot read input");
 
         let choice = input.as_bytes()[0];
-        if choice == 0x31 {
+
+        const ADD_BLOCK_CHOICE: u8 = 0x31;
+
+        if choice == ADD_BLOCK_CHOICE {
 
             /* TODO: should take the user input, use 10 as an example */
             chain.add_block(10);
