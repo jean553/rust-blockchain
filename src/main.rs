@@ -8,7 +8,7 @@ extern crate serde;
 use std::io::stdin;
 
 #[derive(Serialize)]
-struct Block {
+struct Blockchain {
     timestamp: i64,
     data: i32,
     previous: [u8; 20],
@@ -16,9 +16,7 @@ struct Block {
 
 fn main() {
 
-    /* generate the genesis block */
-
-    let chain = Block {
+    let mut chain = Blockchain {
         timestamp: time::now_utc().to_timespec().sec,
         data: 0,
         previous: [0; 20],
@@ -41,7 +39,7 @@ fn main() {
             let previous_bytes = bincode::serialize(&chain).unwrap();
             let previous_digest = sha1::Sha1::from(previous_bytes).digest().bytes();
 
-            let _chain = Block {
+            chain = Blockchain {
                 timestamp: time::now_utc().to_timespec().sec,
                 data: 10,
                 previous: previous_digest,
