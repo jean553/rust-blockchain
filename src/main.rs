@@ -46,6 +46,19 @@ fn get_current_timestamp() -> i64 {
     time::now_utc().to_timespec().sec
 }
 
+/// Handles user input and returns that input as a string.
+///
+/// Returns:
+///
+/// user input as string
+fn get_input() -> String {
+
+    let mut input = String::new();
+    stdin().read_line(&mut input).expect("cannot read input");
+
+    input
+}
+
 fn main() {
 
     let mut chain = Blockchain {
@@ -62,17 +75,18 @@ fn main() {
         println!("1. Add a block");
         println!("2. Update blockchain");
 
-        let mut input = String::new();
-        stdin().read_line(&mut input).expect("cannot read input");
-
+        let input = get_input();
         let choice = input.as_bytes()[0];
 
         const ADD_BLOCK_CHOICE: u8 = 0x31;
 
         if choice == ADD_BLOCK_CHOICE {
 
-            /* TODO: should take the user input, use 10 as an example */
-            chain.add_block(10);
+            println!("Data of the block:");
+
+            let input = get_input();
+            let data: i32 = input.trim().parse().unwrap();
+            chain.add_block(data);
 
             println!("One block has been added to the ledger.");
         }
