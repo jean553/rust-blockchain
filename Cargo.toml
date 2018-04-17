@@ -6,3 +6,6 @@ authors = ["Jean LELIEVRE <Jean.LELIEVRE@supinfo.com>"]
 [dependencies]
 time = "0.1"
 sha1 = "0.6.0"
+bincode = "1.0.0"
+serde = "*"
+serde_derive = "*"
