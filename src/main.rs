@@ -24,6 +24,10 @@ fn main() {
 
     println!("Genesis block has been generated.");
 
+    println!("\nChoices:");
+    println!("1. Add a block");
+    println!("2. Update blockchain");
+
     /* add one block to the ledger: serialize the previous object into raw bytes,
        in order to generate a new hash digest from those bytes,
        and use that digest as a previous field content for the new block */
