@@ -13,6 +13,8 @@ const HASH_BYTES_SIZE: usize = 20;
 struct Blockchain {
     timestamp: i64,
     data: i32,
+    /* declare an array of bytes instead of a sha1::Digest
+       in order to prevent custom serialization definition */
     previous: [u8; HASH_BYTES_SIZE],
 }
 
@@ -28,12 +30,20 @@ impl Blockchain {
         data: i32,
     ) {
 
-        let bytes = bincode::serialize(&self).unwrap();
-        let digest = sha1::Sha1::from(bytes).digest().bytes();
-
         self.timestamp = get_current_timestamp();
         self.data = data;
-        self.previous = digest;
+        self.previous = self.get_digest().bytes();
+    }
+
+    /// Returns the hash digest of the current block.
+    ///
+    /// Returns:
+    ///
+    /// sha1 digest of the current block
+    fn get_digest(&self) -> sha1::Digest {
+
+        let bytes = bincode::serialize(&self).unwrap();
+        sha1::Sha1::from(bytes).digest()
     }
 }
 
@@ -89,6 +99,7 @@ fn main() {
             chain.add_block(data);
 
             println!("One block has been added to the ledger.");
+            println!("Current block digest: {}", chain.get_digest());
         }
     }
 }
