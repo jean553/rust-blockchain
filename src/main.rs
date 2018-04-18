@@ -13,9 +13,7 @@ const HASH_BYTES_SIZE: usize = 20;
 struct Blockchain {
     timestamp: i64,
     data: i32,
-    /* declare an array of bytes instead of a sha1::Digest
-       in order to prevent custom serialization definition */
-    previous: [u8; HASH_BYTES_SIZE],
+    previous: String,
 }
 
 impl Blockchain {
@@ -32,7 +30,7 @@ impl Blockchain {
 
         self.timestamp = get_current_timestamp();
         self.data = data;
-        self.previous = self.get_digest().bytes();
+        self.previous = self.get_digest();
     }
 
     /// Returns the hash digest of the current block.
@@ -40,10 +38,10 @@ impl Blockchain {
     /// Returns:
     ///
     /// sha1 digest of the current block
-    fn get_digest(&self) -> sha1::Digest {
+    fn get_digest(&self) -> String {
 
         let bytes = bincode::serialize(&self).unwrap();
-        sha1::Sha1::from(bytes).digest()
+        sha1::Sha1::from(bytes).hexdigest()
     }
 }
 
@@ -74,7 +72,7 @@ fn main() {
     let mut chain = Blockchain {
         timestamp: get_current_timestamp(),
         data: 0,
-        previous: [0; HASH_BYTES_SIZE],
+        previous: String::new(),
     };
 
     println!("Genesis block has been generated.");
