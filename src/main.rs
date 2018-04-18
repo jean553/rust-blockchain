@@ -7,16 +7,35 @@ extern crate serde;
 
 use std::io::stdin;
 
-const HASH_BYTES_SIZE: usize = 20;
-
 #[derive(Serialize)]
 struct Blockchain {
     timestamp: i64,
     data: i32,
     previous: String,
+    current: String,
 }
 
 impl Blockchain {
+
+    /// Constructor of the blockchain, creates the genesis block with an empty previous block digest.
+    ///
+    /// Returns:
+    ///
+    /// genesis block
+    fn new() -> Blockchain {
+
+        let mut chain = Blockchain {
+            timestamp: get_current_timestamp(),
+            data: 0,
+            previous: String::new(),
+            current: String::new(),
+        };
+
+        /* current block hash generation must be done after block creation */
+        chain.current = chain.get_digest();
+
+        chain
+    }
 
     /// Adds a block into the blockchain. Encrypt the current block, stores it as the previous block, update the timestamp and the data.
     ///
@@ -28,9 +47,10 @@ impl Blockchain {
         data: i32,
     ) {
 
+        self.previous = self.get_digest();
         self.timestamp = get_current_timestamp();
         self.data = data;
-        self.previous = self.get_digest();
+        self.current = self.get_digest();
     }
 
     /// Returns the hash digest of the current block.
@@ -69,11 +89,7 @@ fn get_input() -> String {
 
 fn main() {
 
-    let mut chain = Blockchain {
-        timestamp: get_current_timestamp(),
-        data: 0,
-        previous: String::new(),
-    };
+    let mut chain = Blockchain::new();
 
     println!("Genesis block has been generated.");
 
