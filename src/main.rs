@@ -8,23 +8,23 @@ extern crate serde;
 use std::io::stdin;
 
 #[derive(Serialize)]
-struct Blockchain {
+struct Block {
     timestamp: i64,
     data: i32,
     previous: String,
     current: String,
 }
 
-impl Blockchain {
+impl Block {
 
     /// Constructor of the blockchain, creates the genesis block with an empty previous block digest.
     ///
     /// Returns:
     ///
     /// genesis block
-    fn new() -> Blockchain {
+    fn new() -> Block {
 
-        let mut chain = Blockchain {
+        let mut chain = Block {
             timestamp: get_current_timestamp(),
             data: 0,
             previous: String::new(),
@@ -98,7 +98,7 @@ fn get_input() -> String {
 
 fn main() {
 
-    let mut chain = Blockchain::new();
+    let mut block = Block::new();
 
     println!("Genesis block has been generated.");
 
@@ -119,10 +119,10 @@ fn main() {
 
             let input = get_input();
             let data: i32 = input.trim().parse().unwrap();
-            chain.add_block(data);
+            block.add_block(data);
 
             println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", chain.get_current_digest());
+            println!("Current block digest: {}", block.get_current_digest());
         }
     }
 }
