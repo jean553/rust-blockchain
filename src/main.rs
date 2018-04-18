@@ -63,6 +63,15 @@ impl Blockchain {
         let bytes = bincode::serialize(&self).unwrap();
         sha1::Sha1::from(bytes).hexdigest()
     }
+
+    /// Getter of the current block hash digest.
+    ///
+    /// Returns:
+    ///
+    /// current block digest as string
+    fn get_current_digest(&self) -> &str {
+        &self.current
+    }
 }
 
 /// Refactor the current timestamp generation.
@@ -113,7 +122,7 @@ fn main() {
             chain.add_block(data);
 
             println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", chain.get_digest());
+            println!("Current block digest: {}", chain.get_current_digest());
         }
     }
 }
