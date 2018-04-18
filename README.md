@@ -23,8 +23,9 @@ A very simple blockchain in Rust.
 A block of the ledger contains the following fields:
  * the `timestamp` of the block creation,
  * the `data` of the block (signed integer in order to be similar to cryptocurrencies),
- * the hash digest of the `previous` ledger block (only 0 if the current block is the genesis one)
+ * the hash digest of the `previous` ledger block (empty string if the current block is the genesis one)
+ * the hash digest of the `current` ledger block (stored as a string, hexadecimal digest)
 
 The `Block` structure implements the `Serialize` trait. In order to keep everything simple,
 and in order to prevent custom serialization functions, the block structure only contains
-primitive types (`i64`, `i32` and `[u8]`) as they all already implement the trait.
+primitive types (`i64`, `i32` and `String`) as they all already implement the trait.
