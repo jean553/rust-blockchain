@@ -37,22 +37,6 @@ impl Block {
         chain
     }
 
-    /// Adds a block into the blockchain. Encrypt the current block, stores it as the previous block, update the timestamp and the data.
-    ///
-    /// Args:
-    ///
-    /// `data` - data to insert into the new block.
-    fn add_block(
-        &mut self,
-        data: i32,
-    ) {
-
-        self.previous = self.get_digest();
-        self.timestamp = get_current_timestamp();
-        self.data = data;
-        self.current = self.get_digest();
-    }
-
     /// Returns the hash digest of the current block.
     ///
     /// Returns:
@@ -98,7 +82,7 @@ fn get_input() -> String {
 
 fn main() {
 
-    let mut block = Block::new();
+    let mut chain: Vec<Block> = vec![Block::new()];
 
     println!("Genesis block has been generated.");
 
@@ -119,10 +103,21 @@ fn main() {
 
             let input = get_input();
             let data: i32 = input.trim().parse().unwrap();
-            block.add_block(data);
+
+            let mut block = Block {
+                timestamp: get_current_timestamp(),
+                data: data,
+                previous: chain.last().unwrap().get_current_digest().to_string(),
+                current: String::new(),
+            };
+
+            /* must be done once the block object is fully created */
+            block.current = block.get_digest();
 
             println!("One block has been added to the ledger.");
             println!("Current block digest: {}", block.get_current_digest());
+
+            chain.push(block);
         }
     }
 }
