@@ -8,44 +8,47 @@ extern crate serde;
 use std::io::stdin;
 
 #[derive(Serialize)]
-struct Block {
+struct HashContent {
     timestamp: i64,
     data: i32,
+}
+
+#[derive(Serialize)]
+struct Block {
+    content: HashContent,
     previous: String,
     current: String,
 }
 
 impl Block {
 
-    /// Constructor of the blockchain, creates the genesis block with an empty previous block digest.
+    /// One block constructor. Creates the block from the given data and previous digest.
+    ///
+    /// Args:
+    ///
+    /// `data` - the data of the block
+    /// `previous` - the digest of the previous block (empty if genesis)
     ///
     /// Returns:
     ///
     /// genesis block
-    fn new() -> Block {
+    fn new(
+        data: i32,
+        previous: String,
+    ) -> Block {
 
-        let mut chain = Block {
+        let content = HashContent {
             timestamp: get_current_timestamp(),
-            data: 0,
-            previous: String::new(),
-            current: String::new(),
+            data: data,
         };
 
-        /* current block hash generation must be done after block creation */
-        chain.current = chain.get_digest();
+        let hash = generate_hash(&content);
 
-        chain
-    }
-
-    /// Returns the hash digest of the current block.
-    ///
-    /// Returns:
-    ///
-    /// sha1 digest of the current block
-    fn get_digest(&self) -> String {
-
-        let bytes = bincode::serialize(&self).unwrap();
-        sha1::Sha1::from(bytes).hexdigest()
+        Block {
+            content: content,
+            previous: previous,
+            current: hash,
+        }
     }
 
     /// Getter of the current block hash digest.
@@ -53,9 +56,24 @@ impl Block {
     /// Returns:
     ///
     /// current block digest as string
-    fn get_current_digest(&self) -> &str {
+    fn get_current(&self) -> &str {
         &self.current
     }
+}
+
+/// Generates the digest of a given hash content.
+///
+/// Args:
+///
+/// `content` - the content to process
+///
+/// Returns:
+///
+/// the hash digest as a string
+fn generate_hash(content: &HashContent) -> String {
+
+    let bytes = bincode::serialize(&content).unwrap();
+    sha1::Sha1::from(bytes).hexdigest()
 }
 
 /// Refactor the current timestamp generation.
@@ -82,7 +100,8 @@ fn get_input() -> String {
 
 fn main() {
 
-    let mut chain: Vec<Block> = vec![Block::new()];
+    let genesis = Block::new(0, String::new());
+    let mut chain: Vec<Block> = vec![genesis];
 
     println!("Genesis block has been generated.");
 
@@ -104,18 +123,15 @@ fn main() {
             let input = get_input();
             let data: i32 = input.trim().parse().unwrap();
 
-            let mut block = Block {
-                timestamp: get_current_timestamp(),
-                data: data,
-                previous: chain.last().unwrap().get_current_digest().to_string(),
-                current: String::new(),
-            };
+            let current_digest = chain.last()
+                .unwrap()
+                .get_current()
+                .to_string();
 
-            /* must be done once the block object is fully created */
-            block.current = block.get_digest();
+            let block = Block::new(data, current_digest.clone());
 
             println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", block.get_current_digest());
+            println!("Current block digest: {}", current_digest);
 
             chain.push(block);
         }
