@@ -13,7 +13,6 @@ struct HashContent {
     data: i32,
 }
 
-#[derive(Serialize)]
 struct Block {
     content: HashContent,
     previous: String,
@@ -22,7 +21,7 @@ struct Block {
 
 impl Block {
 
-    /// One block constructor. Creates the block from the given data and previous digest.
+    /// One block constructor. Creates the block from the given data and previous digest. Calculates its own hash digest.
     ///
     /// Args:
     ///
@@ -31,23 +30,24 @@ impl Block {
     ///
     /// Returns:
     ///
-    /// genesis block
+    /// new block
     fn new(
         data: i32,
         previous: String,
     ) -> Block {
 
         let content = HashContent {
-            timestamp: get_current_timestamp(),
+            timestamp: time::now_utc().to_timespec().sec,
             data: data,
         };
 
-        let hash = generate_hash(&content);
+        let bytes = bincode::serialize(&content).unwrap();
+        let digest = sha1::Sha1::from(bytes).hexdigest();
 
         Block {
             content: content,
             previous: previous,
-            current: hash,
+            current: digest,
         }
     }
 
@@ -59,30 +59,6 @@ impl Block {
     fn get_current(&self) -> &str {
         &self.current
     }
-}
-
-/// Generates the digest of a given hash content.
-///
-/// Args:
-///
-/// `content` - the content to process
-///
-/// Returns:
-///
-/// the hash digest as a string
-fn generate_hash(content: &HashContent) -> String {
-
-    let bytes = bincode::serialize(&content).unwrap();
-    sha1::Sha1::from(bytes).hexdigest()
-}
-
-/// Refactor the current timestamp generation.
-///
-/// Returns:
-///
-/// the current timestamp
-fn get_current_timestamp() -> i64 {
-    time::now_utc().to_timespec().sec
 }
 
 /// Handles user input and returns that input as a string.
