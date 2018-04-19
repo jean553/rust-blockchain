@@ -6,6 +6,7 @@ extern crate serde;
 #[macro_use] extern crate serde_derive;
 
 use std::io::stdin;
+use std::net::TcpListener;
 
 #[derive(Serialize)]
 struct HashContent {
@@ -85,7 +86,7 @@ fn main() {
 
         println!("\nChoices:");
         println!("1. Add a block");
-        println!("2. Update blockchain");
+        println!("2. Share blockchain");
 
         let input = get_input();
         let choice = input.as_bytes()[0];
@@ -110,6 +111,19 @@ fn main() {
             println!("Current block digest: {}", current_digest);
 
             chain.push(block);
+
+            continue;
         }
+
+        println!("Share blockchain with local instance at port:");
+
+        let input = get_input();
+        let port = input.trim();
+
+        let bind_address = format!("127.0.0.1:{}", port);
+        let listener = TcpListener::bind(bind_address).unwrap();
+
+        /* TODO: should try to connect to the given node instance;
+           print an error message if connection cannot be established */
     }
 }
