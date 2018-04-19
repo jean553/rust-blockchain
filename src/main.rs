@@ -50,7 +50,7 @@ impl Block {
     /// Returns:
     ///
     /// current block digest as string
-    fn get_current_digest(&self) -> &str {
+    fn get_current(&self) -> &str {
         &self.current
     }
 }
@@ -118,7 +118,7 @@ fn main() {
 
             let current_digest = chain.last()
                 .unwrap()
-                .get_current_digest()
+                .get_current()
                 .to_string();
 
             let content = HashContent {
