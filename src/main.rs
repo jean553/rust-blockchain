@@ -13,7 +13,6 @@ struct HashContent {
     data: i32,
 }
 
-#[derive(Serialize)]
 struct Block {
     content: HashContent,
     previous: String,
