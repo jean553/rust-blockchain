@@ -26,6 +26,13 @@ A block of the ledger contains the following fields:
  * the hash digest of the `previous` ledger block (empty string if the current block is the genesis one)
  * the hash digest of the `current` ledger block (stored as a string, hexadecimal digest)
 
+The `previous` and `current` hash digests are directly fields of the block.
+The `timestamp` and the `data` fields are part of a hashable content structure,
+itself a field of the block structure.
+
+In fact, in order to keep things as simple as possible, only the `timestamp` and
+the `data` are hashed into `previous` and `current`.
+
 The `Block` structure implements the `Serialize` trait. In order to keep everything simple,
 and in order to prevent custom serialization functions, the block structure only contains
 primitive types (`i64`, `i32` and `String`) as they all already implement the trait.
