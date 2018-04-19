@@ -22,27 +22,33 @@ struct Block {
 
 impl Block {
 
-    /// Constructor of the blockchain, creates the genesis block with an empty previous block digest.
+    /// One block constructor. Creates the block from the given data and previous digest.
+    ///
+    /// Args:
+    ///
+    /// `data` - the data of the block
+    /// `previous` - the digest of the previous block (empty if genesis)
     ///
     /// Returns:
     ///
     /// genesis block
-    fn new() -> Block {
+    fn new(
+        data: i32,
+        previous: String,
+    ) -> Block {
 
         let content = HashContent {
             timestamp: get_current_timestamp(),
-            data: 0,
+            data: data,
         };
 
         let hash = generate_hash(&content);
 
-        let chain = Block {
+        Block {
             content: content,
-            previous: String::new(),
+            previous: previous,
             current: hash,
-        };
-
-        chain
+        }
     }
 
     /// Getter of the current block hash digest.
@@ -94,7 +100,8 @@ fn get_input() -> String {
 
 fn main() {
 
-    let mut chain: Vec<Block> = vec![Block::new()];
+    let genesis = Block::new(0, String::new());
+    let mut chain: Vec<Block> = vec![genesis];
 
     println!("Genesis block has been generated.");
 
@@ -121,18 +128,7 @@ fn main() {
                 .get_current()
                 .to_string();
 
-            let content = HashContent {
-                timestamp: get_current_timestamp(),
-                data: data,
-            };
-
-            let hash = generate_hash(&content);
-
-            let block = Block {
-                content: content,
-                previous: current_digest.clone(),
-                current: hash,
-            };
+            let block = Block::new(data, current_digest.clone());
 
             println!("One block has been added to the ledger.");
             println!("Current block digest: {}", current_digest);
