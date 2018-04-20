@@ -86,11 +86,7 @@ impl Block {
         previous: String,
     ) -> Block {
 
-        let content = HashContent {
-            timestamp: time::now_utc().to_timespec().sec,
-            data: data,
-        };
-
+        let content = HashContent::new(data);
         let bytes = bincode::serialize(&content).unwrap();
         let digest = sha1::Sha1::from(bytes).hexdigest();
 
