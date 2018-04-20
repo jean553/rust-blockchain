@@ -105,6 +105,15 @@ impl Block {
     fn get_current(&self) -> &str {
         &self.current
     }
+
+    /// Getter of the hashed content.
+    ///
+    /// Returns:
+    ///
+    /// block hashed content
+    fn get_content(&self) -> &HashContent {
+        &self.content
+    }
 }
 
 /// Handles user input and returns that input as a string.
