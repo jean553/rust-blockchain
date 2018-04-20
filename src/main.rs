@@ -5,7 +5,10 @@ extern crate bincode;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 
-use std::io::stdin;
+use std::io::{
+    stdin,
+    Write,
+};
 use std::net::{
     TcpListener,
     TcpStream,
@@ -17,6 +20,7 @@ struct HashContent {
     data: i32,
 }
 
+#[derive(Serialize)]
 struct Block {
     content: HashContent,
     previous: String,
@@ -128,8 +132,8 @@ fn main() {
             let bind_address = format!("127.0.0.1:{}", port);
             let mut stream = TcpStream::connect(bind_address).unwrap();
 
-            /* TODO: should try to connect to the given node instance;
-               print an error message if connection cannot be established */
+            let bytes = bincode::serialize(&chain).unwrap();
+            stream.write(&bytes);
         }
         else if choice == RECEIVE_BLOCKCHAIN_CHOICE {
 
@@ -141,8 +145,14 @@ fn main() {
             let bind_address = format!("127.0.0.1:{}", port);
             let listener = TcpListener::bind(bind_address).unwrap();
 
-            /* TODO: should listen for an incoming blockchain;
-               print an error message if connection times out */
+            println!("Waiting for connections...");
+
+            for input in listener.incoming() {
+
+                println!("Connection received.");
+
+                /* TODO: should receive the blockchain */
+            }
         }
     }
 }
