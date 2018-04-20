@@ -87,6 +87,25 @@ fn get_input() -> String {
     input
 }
 
+/// Returns an address:port string from the user input. Refactored as used multiple times.
+///
+/// Returns:
+///
+/// bind address in "address:port" format
+fn get_bind_address_from_input() -> String {
+
+    let input = get_input();
+    let port = input.trim();
+
+    const LOCALHOST: &str = "127.0.0.1";
+
+    format!(
+        "{}:{}",
+        LOCALHOST,
+        port,
+    ).to_string()
+}
+
 fn main() {
 
     let genesis = Block::new(0, String::new());
@@ -107,8 +126,6 @@ fn main() {
         const ADD_BLOCK_CHOICE: u8 = 0x31;
         const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
         const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
-
-        const LOCALHOST: &str = "127.0.0.1";
 
         if choice == ADD_BLOCK_CHOICE {
 
@@ -133,14 +150,7 @@ fn main() {
 
             println!("Send blockchain to local instance at port:");
 
-            let input = get_input();
-            let port = input.trim();
-
-            let bind_address = format!(
-                "{}:{}",
-                LOCALHOST,
-                port,
-            );
+            let bind_address = get_bind_address_from_input();
             let mut stream = TcpStream::connect(bind_address).unwrap();
 
             let bytes = serialize(&chain).unwrap();
@@ -150,14 +160,7 @@ fn main() {
 
             println!("Receive blockchain on port:");
 
-            let input = get_input();
-            let port = input.trim();
-
-            let bind_address = format!(
-                "{}:{}",
-                LOCALHOST,
-                port,
-            );
+            let bind_address = get_bind_address_from_input();
             let listener = TcpListener::bind(bind_address).unwrap();
 
             println!("Waiting for connection...");
