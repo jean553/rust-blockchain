@@ -86,12 +86,15 @@ fn main() {
 
         println!("\nChoices:");
         println!("1. Add a block");
-        println!("2. Share blockchain");
+        println!("2. Send blockchain");
+        println!("3. Receive blockchain");
 
         let input = get_input();
         let choice = input.as_bytes()[0];
 
         const ADD_BLOCK_CHOICE: u8 = 0x31;
+        const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
+        const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
 
         if choice == ADD_BLOCK_CHOICE {
 
@@ -111,19 +114,32 @@ fn main() {
             println!("Current block digest: {}", current_digest);
 
             chain.push(block);
-
-            continue;
         }
+        else if choice == SEND_BLOCKCHAIN_CHOICE {
 
-        println!("Share blockchain with local instance at port:");
+            println!("Send blockchain to local instance at port:");
 
-        let input = get_input();
-        let port = input.trim();
+            let input = get_input();
+            let port = input.trim();
 
-        let bind_address = format!("127.0.0.1:{}", port);
-        let listener = TcpListener::bind(bind_address).unwrap();
+            let bind_address = format!("127.0.0.1:{}", port);
+            let listener = TcpListener::bind(bind_address).unwrap();
 
-        /* TODO: should try to connect to the given node instance;
-           print an error message if connection cannot be established */
+            /* TODO: should try to connect to the given node instance;
+               print an error message if connection cannot be established */
+        }
+        else if choice == RECEIVE_BLOCKCHAIN_CHOICE {
+
+            println!("Receive blockchain on port:");
+
+            let input = get_input();
+            let port = input.trim();
+
+            let bind_address = format!("127.0.0.1:{}", port);
+            let listener = TcpListener::bind(bind_address).unwrap();
+
+            /* TODO: should listen for an incoming blockchain;
+               print an error message if connection times out */
+        }
     }
 }
