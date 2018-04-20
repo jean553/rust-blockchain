@@ -32,6 +32,43 @@ struct Block {
     current: String,
 }
 
+impl HashContent {
+
+    /// Creates a brand new hash content.
+    ///
+    /// Args:
+    ///
+    /// `data` - the data to store into the block hash content
+    ///
+    /// Returns:
+    ///
+    /// hash content with current timestamp and given data
+    fn new(data: i32) -> HashContent {
+        HashContent {
+            timestamp: time::now_utc().to_timespec().sec,
+            data: data,
+        }
+    }
+
+    /// Getter of the timestamp.
+    ///
+    /// Returns:
+    ///
+    /// block creation timestamp
+    fn get_timestamp(&self) -> i64 {
+        self.timestamp
+    }
+
+    /// Getter of the data.
+    ///
+    /// Returns:
+    ///
+    /// block data
+    fn get_data(&self) -> i32 {
+        self.data
+    }
+}
+
 impl Block {
 
     /// One block constructor. Creates the block from the given data and previous digest. Calculates its own hash digest.
@@ -49,11 +86,7 @@ impl Block {
         previous: String,
     ) -> Block {
 
-        let content = HashContent {
-            timestamp: time::now_utc().to_timespec().sec,
-            data: data,
-        };
-
+        let content = HashContent::new(data);
         let bytes = bincode::serialize(&content).unwrap();
         let digest = sha1::Sha1::from(bytes).hexdigest();
 
@@ -71,6 +104,15 @@ impl Block {
     /// current block digest as string
     fn get_current(&self) -> &str {
         &self.current
+    }
+
+    /// Getter of the hashed content.
+    ///
+    /// Returns:
+    ///
+    /// block hashed content
+    fn get_content(&self) -> &HashContent {
+        &self.content
     }
 }
 
@@ -119,6 +161,7 @@ fn main() {
         println!("1. Add a block");
         println!("2. Send blockchain");
         println!("3. Receive blockchain");
+        println!("4. See local blockchain");
 
         let input = get_input();
         let choice = input.as_bytes()[0];
@@ -126,6 +169,7 @@ fn main() {
         const ADD_BLOCK_CHOICE: u8 = 0x31;
         const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
         const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
+        const SEE_BLOCKCHAIN_CHOICE: u8 = 0x34;
 
         if choice == ADD_BLOCK_CHOICE {
 
@@ -177,6 +221,16 @@ fn main() {
             let blockchain: Vec<Block> = deserialize(&buffer).unwrap();
 
             /* TODO: compare chains in order to replace it or not... */
+        }
+        else if choice == SEE_BLOCKCHAIN_CHOICE {
+
+            for block in chain.iter() {
+
+                let content = block.get_content();
+                println!("Hash: {}", block.get_current());
+                println!("Timestamp: {}", content.get_timestamp());
+                println!("Data: {} \n\n", content.get_data());
+            }
         }
     }
 }
