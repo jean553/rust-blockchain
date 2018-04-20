@@ -161,6 +161,7 @@ fn main() {
         println!("1. Add a block");
         println!("2. Send blockchain");
         println!("3. Receive blockchain");
+        println!("4. See local blockchain");
 
         let input = get_input();
         let choice = input.as_bytes()[0];
@@ -168,6 +169,7 @@ fn main() {
         const ADD_BLOCK_CHOICE: u8 = 0x31;
         const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
         const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
+        const SEE_BLOCKCHAIN_CHOICE: u8 = 0x34;
 
         if choice == ADD_BLOCK_CHOICE {
 
@@ -219,6 +221,16 @@ fn main() {
             let blockchain: Vec<Block> = deserialize(&buffer).unwrap();
 
             /* TODO: compare chains in order to replace it or not... */
+        }
+        else if choice == SEE_BLOCKCHAIN_CHOICE {
+
+            for block in chain.iter() {
+
+                let content = block.get_content();
+                println!("Hash: {}", block.get_current());
+                println!("Timestamp: {}", content.get_timestamp());
+                println!("Data: {} \n\n", content.get_data());
+            }
         }
     }
 }
