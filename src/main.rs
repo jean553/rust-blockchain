@@ -155,14 +155,11 @@ fn main() {
             );
             let listener = TcpListener::bind(bind_address).unwrap();
 
-            println!("Waiting for connections...");
+            println!("Waiting for connection...");
 
-            for input in listener.incoming() {
+            let connection = listener.accept().unwrap();
 
-                println!("Connection received.");
-
-                /* TODO: should receive the blockchain */
-            }
+            println!("Connection received.");
         }
     }
 }
