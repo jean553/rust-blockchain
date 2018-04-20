@@ -103,6 +103,8 @@ fn main() {
         const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
         const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
 
+        const LOCALHOST: &str = "127.0.0.1";
+
         if choice == ADD_BLOCK_CHOICE {
 
             println!("Data of the block:");
@@ -129,7 +131,11 @@ fn main() {
             let input = get_input();
             let port = input.trim();
 
-            let bind_address = format!("127.0.0.1:{}", port);
+            let bind_address = format!(
+                "{}:{}",
+                LOCALHOST,
+                port,
+            );
             let mut stream = TcpStream::connect(bind_address).unwrap();
 
             let bytes = bincode::serialize(&chain).unwrap();
@@ -142,7 +148,11 @@ fn main() {
             let input = get_input();
             let port = input.trim();
 
-            let bind_address = format!("127.0.0.1:{}", port);
+            let bind_address = format!(
+                "{}:{}",
+                LOCALHOST,
+                port,
+            );
             let listener = TcpListener::bind(bind_address).unwrap();
 
             println!("Waiting for connections...");
