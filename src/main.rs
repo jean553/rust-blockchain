@@ -6,7 +6,10 @@ extern crate serde;
 #[macro_use] extern crate serde_derive;
 
 use std::io::stdin;
-use std::net::TcpListener;
+use std::net::{
+    TcpListener,
+    TcpStream,
+};
 
 #[derive(Serialize)]
 struct HashContent {
@@ -123,7 +126,7 @@ fn main() {
             let port = input.trim();
 
             let bind_address = format!("127.0.0.1:{}", port);
-            let listener = TcpListener::bind(bind_address).unwrap();
+            let mut stream = TcpStream::connect(bind_address).unwrap();
 
             /* TODO: should try to connect to the given node instance;
                print an error message if connection cannot be established */
