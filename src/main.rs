@@ -9,7 +9,6 @@ extern crate serde;
 use std::io::{
     stdin,
     stdout,
-    repeat,
     Write,
     Read,
 };
@@ -25,7 +24,6 @@ use termion::{
     color,
     terminal_size,
 };
-use termion::raw::IntoRawMode;
 use termion::cursor::Goto;
 
 #[derive(Serialize, Deserialize)]
@@ -211,7 +209,7 @@ fn main() {
     loop {
 
         print!(">>> ");
-        stdout().flush(); // print! macro is buffered, need to flush
+        stdout().flush().unwrap(); // print! macro is buffered, need to flush
 
         let input = get_input();
 
@@ -219,6 +217,7 @@ fn main() {
         const SEND_BLOCKCHAIN_CHOICE: &str = "send";
         const RECEIVE_BLOCKCHAIN_CHOICE: &str = "receive";
         const SEE_BLOCKCHAIN_CHOICE: &str = "list";
+        const HELP_CHOICE: &str = "help";
 
         if input == ADD_BLOCK_CHOICE {
 
@@ -247,7 +246,7 @@ fn main() {
             let mut stream = TcpStream::connect(bind_address).unwrap();
 
             let bytes = serialize(&chain).unwrap();
-            stream.write(&bytes);
+            stream.write(&bytes).unwrap();
         }
         else if input == RECEIVE_BLOCKCHAIN_CHOICE {
 
@@ -255,14 +254,14 @@ fn main() {
 
             println!("Waiting for connection...");
 
-            let mut connection = listener.accept().unwrap();
+            let connection = listener.accept().unwrap();
 
             println!("Connection received.");
 
             let mut buffer: Vec<u8> = Vec::new();
             let mut stream = connection.0;
 
-            stream.read_to_end(&mut buffer);
+            stream.read_to_end(&mut buffer).unwrap();
 
             /* TODO: check integrity of the received chain */
 
