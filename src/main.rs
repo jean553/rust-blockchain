@@ -166,18 +166,32 @@ fn clear_screen() {
     println!("{}", Goto(1, 1));
 
     let (width, height) = terminal_size().unwrap();
-    let (width, height) = (width as usize, height as usize);
+    let (width, height) = (width as usize, height as u16);
 
+    const TITLE: &str = "rust-blockchain";
     println!(
-        "{}{}rust-blockchain {} {}{}",
+        "{}{}{}{}{}{}",
         color::Bg(color::Blue),
         color::Fg(color::White),
-        std::iter::repeat(' ').take(width).collect::<String>(),
+        TITLE,
+        std::iter::repeat(' ').take(width - TITLE.len()).collect::<String>(),
         color::Bg(color::Reset),
         color::Fg(color::Reset),
     );
 
-    println!("{}", Goto(0, 2));
+    println!("{}", Goto(0, height - 1));
+    const DEFAULT_MESSAGE: &str = "Waiting. Type 'help' to get the list of available commands.";
+    println!(
+        "{}{}{}{}{}{}",
+        color::Bg(color::Blue),
+        color::Fg(color::White),
+        DEFAULT_MESSAGE,
+        std::iter::repeat(' ')
+            .take(width - DEFAULT_MESSAGE.len())
+            .collect::<String>(),
+        color::Bg(color::Reset),
+        color::Fg(color::Reset),
+    );
 }
 
 fn main() {
@@ -187,15 +201,10 @@ fn main() {
     let genesis = Block::new(0, String::new());
     let mut chain: Vec<Block> = vec![genesis];
 
+    println!("{}", Goto(0, 2));
     println!("Genesis block has been generated.");
 
     loop {
-
-        println!("\nChoices:");
-        println!("1. Add a block");
-        println!("2. Send blockchain");
-        println!("3. Receive blockchain");
-        println!("4. See local blockchain");
 
         let input = get_input();
         let choice = input.as_bytes()[0];
