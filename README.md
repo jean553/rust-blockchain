@@ -13,6 +13,7 @@ A very simple blockchain in Rust.
  * Usage
     - Create many nodes
     - Start a node
+    - Check node IP address
 
 ## Dependencies
 
@@ -72,4 +73,20 @@ Start the service:
 
 ```sh
 ./target/release/rust-blockchain
+```
+
+### Check node IP address
+
+IP address is necessary when synchronizing the local blockchain of a node.
+In order to check the private IP address of a node within the Docker LAN,
+simply execute:
+
+```sh
+docker inspect rust_blockchain_dev
+```
+
+This is also possible to set the IP address of a node into the Vagrantfile:
+
+```ruby
+config.vm.network "private_network", ip: "10.10.10.10"
 ```
