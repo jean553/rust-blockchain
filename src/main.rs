@@ -23,9 +23,10 @@ use bincode::{
 };
 use termion::{
     color,
-    style,
+    terminal_size,
 };
 use termion::raw::IntoRawMode;
+use termion::cursor::Goto;
 
 #[derive(Serialize, Deserialize)]
 struct HashContent {
@@ -162,14 +163,13 @@ fn clear_screen() {
     /* send a control character to the terminal */
     print!("{}[2J", 27 as char);
 
-    let mut stdout = stdout().into_raw_mode().unwrap();
-    writeln!(stdout, "{}", termion::cursor::Goto(1, 1));
+    println!("{}", Goto(1, 1));
 
-    let (width, height) = termion::terminal_size().unwrap();
+    let (width, height) = terminal_size().unwrap();
     let (width, height) = (width as usize, height as usize);
 
     println!(
-        "{}{} rust-blockchain {} {}{}",
+        "{}{}rust-blockchain {} {}{}",
         color::Bg(color::Blue),
         color::Fg(color::White),
         std::iter::repeat(' ').take(width).collect::<String>(),
@@ -177,7 +177,7 @@ fn clear_screen() {
         color::Fg(color::Reset),
     );
 
-    writeln!(stdout, "{}", termion::cursor::Goto(0, 2));
+    println!("{}", Goto(0, 2));
 }
 
 fn main() {
