@@ -158,6 +158,10 @@ fn get_bind_address_from_input() -> String {
 }
 
 /// Display text into a blue bar with a width that is as long as the terminal width. Refactored as it is used multiple times.
+///
+/// Args:
+///
+/// `text` - the text to display into the text bar
 fn display_text_bar(text: &str) {
 
     println!(
@@ -174,7 +178,11 @@ fn display_text_bar(text: &str) {
 }
 
 /// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times and definition might not be clear.
-fn clear_screen() {
+///
+/// Args:
+///
+/// `height` - the terminal height
+fn clear_screen(height: u16) {
 
     /* send a control character to the terminal */
     print!("{}[2J", 27 as char);
@@ -182,16 +190,16 @@ fn clear_screen() {
     println!("{}", Goto(1, 1));
     display_text_bar("rust-blockchain");
 
-    let (_, height) = terminal_size().unwrap();
-    let height = height as u16;
-
     println!("{}", Goto(0, height - 1));
     display_text_bar("Waiting. Type 'help' to get the commands list.");
 }
 
 fn main() {
 
-    clear_screen();
+    let (_, height) = terminal_size().unwrap();
+    let height = height as u16;
+
+    clear_screen(height);
 
     let genesis = Block::new(0, String::new());
     let mut chain: Vec<Block> = vec![genesis];
@@ -199,7 +207,12 @@ fn main() {
     println!("{}", Goto(0, 2));
     println!("Genesis block has been generated.");
 
+    println!("{}", Goto(0, height - 3));
+
     loop {
+
+        print!(">>> ");
+        stdout().flush(); // print! macro is buffered, need to flush
 
         let input = get_input();
         let choice = input.as_bytes()[0];
