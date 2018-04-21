@@ -186,7 +186,7 @@ fn main() {
             let block = Block::new(data, current_digest.clone());
 
             println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", current_digest);
+            println!("Current block digest: {}", block.get_current());
 
             chain.push(block);
         }
@@ -218,9 +218,9 @@ fn main() {
 
             stream.read_to_end(&mut buffer);
 
-            let blockchain: Vec<Block> = deserialize(&buffer).unwrap();
-
             /* TODO: compare chains in order to replace it or not... */
+
+            chain = deserialize(&buffer).unwrap();
         }
         else if choice == SEE_BLOCKCHAIN_CHOICE {
 
