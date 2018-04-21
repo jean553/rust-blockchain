@@ -218,9 +218,12 @@ fn main() {
 
             stream.read_to_end(&mut buffer);
 
-            /* TODO: compare chains in order to replace it or not... */
+            /* TODO: check integrity of the received chain */
 
-            chain = deserialize(&buffer).unwrap();
+            let received_chain: Vec<Block> = deserialize(&buffer).unwrap();
+            if received_chain.len() > chain.len() {
+                chain = received_chain;
+            }
         }
         else if choice == SEE_BLOCKCHAIN_CHOICE {
 
