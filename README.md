@@ -10,6 +10,9 @@ A very simple blockchain in Rust.
 
  * Dependencies
  * Block structure
+ * Usage
+    - Create many nodes
+    - Start a node
 
 ## Dependencies
 
@@ -36,3 +39,37 @@ the `data` are hashed into `previous` and `current`.
 The `Block` structure implements the `Serialize` trait. In order to keep everything simple,
 and in order to prevent custom serialization functions, the block structure only contains
 primitive types (`i64`, `i32` and `String`) as they all already implement the trait.
+
+## Usage
+
+This section explains how to use the blockchain.
+
+### Create many nodes
+
+Blockchain usually works with multiple nodes. In order to create multiple nodes,
+you can simply `git clone` or copy the project at different location,
+rename the `PROJECT` environment variable from the Vagrantfile
+(for instance, `rust_blockchain_0`, `rust_blockchain_1`, `rust_blockchain_2`...),
+and execute `vagrant up` for each of these program.
+
+(beware, do not copy the hidden directory `.vagrant/`)
+
+### Start a node
+
+To start a node, simply build the container:
+
+```sh
+vagrant up
+```
+
+Connect using SSH to the container:
+
+```sh
+vagrant ssh
+```
+
+Start the service:
+
+```sh
+./target/release/rust-blockchain
+```
