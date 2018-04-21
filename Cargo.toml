@@ -9,3 +9,4 @@ sha1 = { version = "0.6.0", features = ["std"] }
 bincode = "1.0.0"
 serde = "*"
 serde_derive = "*"
+termion = "1.5.1"
