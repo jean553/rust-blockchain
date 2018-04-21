@@ -280,5 +280,14 @@ fn main() {
                 println!("Data: {} \n\n", content.get_data());
             }
         }
+        else if input == HELP_CHOICE {
+
+            /* TODO: should use command options */
+
+            println!("add_block - append a block into the local blockchain");
+            println!("send - send a copy of the blockchain to another node");
+            println!("receive - receive a copy of the blockchain from another node");
+            println!("list - list the local chain blocks");
+        }
     }
 }
