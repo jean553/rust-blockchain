@@ -204,14 +204,13 @@ fn main() {
     println!("{}", Goto(0, 2));
     println!("Genesis block has been generated.");
 
-    println!("{}", Goto(0, height - 3));
-
     loop {
 
-        print!(">>> ");
-        stdout().flush().unwrap(); // print! macro is buffered, need to flush
-
+        println!("{}", Goto(0, height - 3));
         let input = get_input();
+        clear_screen(height);
+
+        println!("{}", Goto(0, 2));
 
         const ADD_BLOCK_CHOICE: &str = "add_block";
         const SEND_BLOCKCHAIN_CHOICE: &str = "send";
