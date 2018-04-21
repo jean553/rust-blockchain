@@ -148,7 +148,16 @@ fn get_bind_address_from_input() -> String {
     ).to_string()
 }
 
+/// Clear the whole terminal content. Refactored as used multiple times and definition might not be clear.
+fn clear_screen() {
+
+    /* send a control character to the terminal */
+    print!("{}[2J", 27 as char);
+}
+
 fn main() {
+
+    clear_screen();
 
     let genesis = Block::new(0, String::new());
     let mut chain: Vec<Block> = vec![genesis];
