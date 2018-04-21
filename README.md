@@ -8,12 +8,12 @@ A very simple blockchain in Rust.
 
 ## Table of content
 
- * Dependencies
- * Block structure
- * Usage
-    - Create many nodes
-    - Start a node
-    - Check node IP address
+ * [Dependencies](#dependencies)
+ * [Block structure](#block-structure)
+ * [Usage](#usage)
+    - [Create many nodes](#create-many-nodes)
+    - [Start a node](#start-a-node)
+    - [Check node IP address](#check-node-ip-address)
 
 ## Dependencies
 
