@@ -218,9 +218,9 @@ fn main() {
 
             stream.read_to_end(&mut buffer);
 
-            let blockchain: Vec<Block> = deserialize(&buffer).unwrap();
-
             /* TODO: compare chains in order to replace it or not... */
+
+            chain = deserialize(&buffer).unwrap();
         }
         else if choice == SEE_BLOCKCHAIN_CHOICE {
 
