@@ -134,8 +134,7 @@ fn get_input() -> String {
 
     let mut input = String::new();
     stdin().read_line(&mut input).expect("cannot read input");
-
-    input
+    input.trim().to_string()
 }
 
 /// Returns an address:port string from the user input. Refactored as used multiple times.
@@ -215,14 +214,13 @@ fn main() {
         stdout().flush(); // print! macro is buffered, need to flush
 
         let input = get_input();
-        let choice = input.as_bytes()[0];
 
-        const ADD_BLOCK_CHOICE: u8 = 0x31;
-        const SEND_BLOCKCHAIN_CHOICE: u8 = 0x32;
-        const RECEIVE_BLOCKCHAIN_CHOICE: u8 = 0x33;
-        const SEE_BLOCKCHAIN_CHOICE: u8 = 0x34;
+        const ADD_BLOCK_CHOICE: &str = "add_block";
+        const SEND_BLOCKCHAIN_CHOICE: &str = "send";
+        const RECEIVE_BLOCKCHAIN_CHOICE: &str = "receive";
+        const SEE_BLOCKCHAIN_CHOICE: &str = "list";
 
-        if choice == ADD_BLOCK_CHOICE {
+        if input == ADD_BLOCK_CHOICE {
 
             println!("Data of the block:");
 
@@ -241,7 +239,7 @@ fn main() {
 
             chain.push(block);
         }
-        else if choice == SEND_BLOCKCHAIN_CHOICE {
+        else if input == SEND_BLOCKCHAIN_CHOICE {
 
             println!("Send blockchain to node at IP:");
 
@@ -251,7 +249,7 @@ fn main() {
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes);
         }
-        else if choice == RECEIVE_BLOCKCHAIN_CHOICE {
+        else if input == RECEIVE_BLOCKCHAIN_CHOICE {
 
             let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
@@ -273,7 +271,7 @@ fn main() {
                 chain = received_chain;
             }
         }
-        else if choice == SEE_BLOCKCHAIN_CHOICE {
+        else if input == SEE_BLOCKCHAIN_CHOICE {
 
             for block in chain.iter() {
 
