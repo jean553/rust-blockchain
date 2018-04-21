@@ -137,14 +137,14 @@ fn get_input() -> String {
 fn get_bind_address_from_input() -> String {
 
     let input = get_input();
-    let port = input.trim();
+    let address = input.trim();
 
-    const LOCALHOST: &str = "127.0.0.1";
+    const PORT: &str = "10000";
 
     format!(
         "{}:{}",
-        LOCALHOST,
-        port,
+        address,
+        PORT,
     ).to_string()
 }
 
@@ -192,7 +192,7 @@ fn main() {
         }
         else if choice == SEND_BLOCKCHAIN_CHOICE {
 
-            println!("Send blockchain to local instance at port:");
+            println!("Send blockchain to node at IP:");
 
             let bind_address = get_bind_address_from_input();
             let mut stream = TcpStream::connect(bind_address).unwrap();
@@ -202,10 +202,7 @@ fn main() {
         }
         else if choice == RECEIVE_BLOCKCHAIN_CHOICE {
 
-            println!("Receive blockchain on port:");
-
-            let bind_address = get_bind_address_from_input();
-            let listener = TcpListener::bind(bind_address).unwrap();
+            let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
             println!("Waiting for connection...");
 
