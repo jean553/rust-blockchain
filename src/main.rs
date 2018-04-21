@@ -1,12 +1,15 @@
 extern crate time;
 extern crate sha1;
 extern crate bincode;
+extern crate termion;
 
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 
 use std::io::{
     stdin,
+    stdout,
+    repeat,
     Write,
     Read,
 };
@@ -18,6 +21,11 @@ use bincode::{
     serialize,
     deserialize,
 };
+use termion::{
+    color,
+    style,
+};
+use termion::raw::IntoRawMode;
 
 #[derive(Serialize, Deserialize)]
 struct HashContent {
@@ -148,11 +156,28 @@ fn get_bind_address_from_input() -> String {
     ).to_string()
 }
 
-/// Clear the whole terminal content. Refactored as used multiple times and definition might not be clear.
+/// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times and definition might not be clear.
 fn clear_screen() {
 
     /* send a control character to the terminal */
     print!("{}[2J", 27 as char);
+
+    let mut stdout = stdout().into_raw_mode().unwrap();
+    writeln!(stdout, "{}", termion::cursor::Goto(1, 1));
+
+    let (width, height) = termion::terminal_size().unwrap();
+    let (width, height) = (width as usize, height as usize);
+
+    println!(
+        "{}{} rust-blockchain {} {}{}",
+        color::Bg(color::Blue),
+        color::Fg(color::White),
+        std::iter::repeat(' ').take(width).collect::<String>(),
+        color::Bg(color::Reset),
+        color::Fg(color::Reset),
+    );
+
+    writeln!(stdout, "{}", termion::cursor::Goto(0, 2));
 }
 
 fn main() {
