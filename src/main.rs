@@ -186,7 +186,7 @@ fn main() {
             let block = Block::new(data, current_digest.clone());
 
             println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", current_digest);
+            println!("Current block digest: {}", block.get_current());
 
             chain.push(block);
         }
