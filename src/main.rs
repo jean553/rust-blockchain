@@ -8,7 +8,6 @@ extern crate serde;
 
 use std::io::{
     stdin,
-    stdout,
     Write,
     Read,
 };
@@ -125,24 +124,38 @@ impl Block {
 
 /// Handles user input and returns that input as a string.
 ///
+/// Args:
+///
+/// `height` - the terminal height
+///
 /// Returns:
 ///
 /// user input as string
-fn get_input() -> String {
+fn get_input(height: u16) -> String {
+
+    println!("{}", Goto(0, height - 3));
 
     let mut input = String::new();
     stdin().read_line(&mut input).expect("cannot read input");
+
+    clear_screen(height);
+    println!("{}", Goto(0, 2));
+
     input.trim().to_string()
 }
 
 /// Returns an address:port string from the user input. Refactored as used multiple times.
 ///
+/// Args:
+///
+/// `height` - the terminal height
+///
 /// Returns:
 ///
 /// bind address in "address:port" format
-fn get_bind_address_from_input() -> String {
+fn get_bind_address_from_input(height: u16) -> String {
 
-    let input = get_input();
+    let input = get_input(height);
     let address = input.trim();
 
     const PORT: &str = "10000";
@@ -206,11 +219,7 @@ fn main() {
 
     loop {
 
-        println!("{}", Goto(0, height - 3));
-        let input = get_input();
-        clear_screen(height);
-
-        println!("{}", Goto(0, 2));
+        let input = get_input(height);
 
         const ADD_BLOCK_CHOICE: &str = "add_block";
         const SEND_BLOCKCHAIN_CHOICE: &str = "send";
@@ -222,7 +231,7 @@ fn main() {
 
             println!("Data of the block:");
 
-            let input = get_input();
+            let input = get_input(height);
             let data: i32 = input.trim().parse().unwrap();
 
             let current_digest = chain.last()
@@ -241,7 +250,7 @@ fn main() {
 
             println!("Send blockchain to node at IP:");
 
-            let bind_address = get_bind_address_from_input();
+            let bind_address = get_bind_address_from_input(height);
             let mut stream = TcpStream::connect(bind_address).unwrap();
 
             let bytes = serialize(&chain).unwrap();
