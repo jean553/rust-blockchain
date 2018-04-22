@@ -139,6 +139,8 @@ fn main() {
         const SEE_BLOCKCHAIN_CHOICE: &str = "list";
         const HELP_CHOICE: &str = "help";
 
+        const PORT: &str = "10000";
+
         if command == ADD_BLOCK_CHOICE {
 
             let data: i32 = match splitted.get(1) {
@@ -172,10 +174,13 @@ fn main() {
         }
         else if command == SEND_BLOCKCHAIN_CHOICE {
 
-            println!("Send blockchain to node at IP:");
+            let address = match splitted.get(1) {
+                Some(value) => value.trim(),
+                None => { continue; }
+            };
 
-            let bind_address = get_bind_address_from_input(height);
-            let mut stream = TcpStream::connect(bind_address).unwrap();
+            let full_address = format!("{}:{}", address, PORT);
+            let mut stream = TcpStream::connect(full_address).unwrap();
 
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes).unwrap();
