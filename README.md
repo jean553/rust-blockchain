@@ -16,6 +16,7 @@ A very simple blockchain in Rust.
     - [Check node IP address](#check-node-ip-address)
  * [Find peers](#find-peers)
     - [Manually add a peer](#manually-add-a-peer)
+    - [List peers](#list-peers)
 
 ## Dependencies
 
@@ -105,4 +106,10 @@ Simply add a peer with `add_peer`.
 
 ```sh
 add_peer 172.0.0.10
+```
+
+### List peers
+
+```sh
+list_peers
 ```
