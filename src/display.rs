@@ -8,7 +8,7 @@ use termion::{
 };
 use termion::cursor::Goto;
 
-/// Display the given text into an horizontal bar.
+/// Display the given text into an horizontal bar. Refactored here as it is used when the screen is reset but also when the status bar content is updated.
 ///
 /// Args:
 ///
@@ -41,7 +41,7 @@ pub fn set_status_text(text: &str, height: u16) {
     println!("{}", Goto(0, 2));
 }
 
-/// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times and definition might not be clear.
+/// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times.
 pub fn clear_screen() {
 
     /* send a control character to the terminal */
