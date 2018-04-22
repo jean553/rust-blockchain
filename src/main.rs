@@ -38,6 +38,7 @@ use block::Block;
 use blocks::{
     add_genesis_block,
     add_block,
+    list_blocks,
 };
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
@@ -239,14 +240,7 @@ fn main() {
             }
         }
         else if command == SEE_BLOCKCHAIN {
-
-            for block in chain.iter() {
-
-                let content = block.get_content();
-                println!("Hash: {}", block.get_current());
-                println!("Timestamp: {}", content.get_timestamp());
-                println!("Data: {} \n\n", content.get_data());
-            }
+            list_blocks(&chain);
         }
         else if command == ADD_PEER {
 
