@@ -64,7 +64,7 @@ fn get_input(height: u16) -> String {
 ///
 /// `text` - the text to display into the text bar
 /// `height` - the height of the terminal screen
-fn display_text_bar(text: &str, height: u16) {
+fn set_status_text(text: &str, height: u16) {
 
     println!("{}", Goto(0, height - 2));
     println!(
@@ -130,7 +130,7 @@ fn main() {
 
     loop {
 
-        display_text_bar(DEFAULT_STATUS, height);
+        set_status_text(DEFAULT_STATUS, height);
 
         let input = get_input(height);
         let splitted: Vec<&str> = input.split(' ').collect();
@@ -197,7 +197,7 @@ fn main() {
                 }
             };
 
-            display_text_bar(&format!("Trying to connect to {}...", address), height);
+            set_status_text(&format!("Trying to connect to {}...", address), height);
 
             let mut stream = match TcpStream::connect_timeout(
                 &bind_address,
