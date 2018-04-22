@@ -119,11 +119,9 @@ fn main() {
 
     clear_screen(height);
 
-    let genesis = Block::new(0, String::new());
-    let mut chain: Vec<Block> = vec![genesis];
+    let mut chain: Vec<Block> = Vec::new();
 
     println!("{}", Goto(0, 2));
-    println!("Genesis block has been generated.");
 
     loop {
 
@@ -141,6 +139,18 @@ fn main() {
 
             let input = get_input(height);
             let data: i32 = input.trim().parse().unwrap();
+
+            if chain.is_empty() {
+
+                let genesis = Block::new(0, String::new());
+
+                println!("Genesis block has been generated.");
+                println!("Current block digest: {}", genesis.get_current());
+
+                chain.push(genesis);
+
+                continue;
+            }
 
             let current_digest = chain.last()
                 .unwrap()
