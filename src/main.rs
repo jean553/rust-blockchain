@@ -42,7 +42,10 @@ use blocks::{
     list_blocks,
 };
 
-use peers::create_peer;
+use peers::{
+    create_peer,
+    list_peers,
+};
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
@@ -249,11 +252,7 @@ fn main() {
             create_peer(&mut peers, option);
         }
         else if command == LIST_PEERS {
-
-            for peer in peers.iter() {
-
-                println!("{}", peer.to_string());
-            }
+            list_peers(&peers);
         }
         else if command == HELP {
 

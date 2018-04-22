@@ -24,3 +24,15 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
         }
     };
 }
+
+/// Displays all the peers.
+///
+/// Args:
+///
+/// `peers` - the list of peers to display
+pub fn list_peers(peers: &Vec<SocketAddr>) {
+
+    for peer in peers.iter() {
+        println!("{}", peer.to_string());
+    }
+}
