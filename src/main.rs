@@ -145,6 +145,7 @@ fn main() {
         const RECEIVE_BLOCKCHAIN_CHOICE: &str = "receive";
         const SEE_BLOCKCHAIN_CHOICE: &str = "list";
         const ADD_PEER_CHOICE: &str = "add_peer";
+        const LIST_PEERS_CHOICE: &str = "list_peers";
         const HELP_CHOICE: &str = "help";
 
         const PORT: &str = "10000";
@@ -267,6 +268,13 @@ fn main() {
                     println!("Incorrect address format.");
                 }
             };
+        }
+        else if command == LIST_PEERS_CHOICE {
+
+            for peer in peers.iter() {
+
+                println!("{}", peer.to_string());
+            }
         }
         else if command == HELP_CHOICE {
 
