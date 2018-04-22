@@ -29,7 +29,6 @@ use bincode::{
     serialize,
     deserialize,
 };
-use termion::terminal_size;
 
 use block::Block;
 
@@ -70,9 +69,6 @@ fn handle_incoming_connections() {
 
 fn main() {
 
-    let (_, height) = terminal_size().unwrap();
-    let height = height as u16;
-
     clear_screen();
 
     let mut chain: Vec<Block> = Vec::new();
@@ -82,9 +78,9 @@ fn main() {
 
     loop {
 
-        set_status_text(DEFAULT_STATUS, height);
+        set_status_text(DEFAULT_STATUS);
 
-        let input = get_input(height);
+        let input = get_input();
         let splitted: Vec<&str> = input.split(' ').collect();
 
         /* get() returns &&str, so we mention result type &str
@@ -141,7 +137,7 @@ fn main() {
                 }
             };
 
-            set_status_text(&format!("Trying to connect to {}...", option), height);
+            set_status_text(&format!("Trying to connect to {}...", option));
 
             let mut stream = match TcpStream::connect_timeout(
                 &bind_address,

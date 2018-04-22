@@ -34,10 +34,9 @@ pub fn display_text_bar(text: &str) {
 /// Args:
 ///
 /// `text` - the text to display into the text bar
-/// `height` - the height of the terminal screen
-pub fn set_status_text(text: &str, height: u16) {
+pub fn set_status_text(text: &str) {
 
-    println!("{}", Goto(0, height - 2));
+    println!("{}", Goto(0, get_terminal_height() - 2));
     display_text_bar(text);
     println!("{}", Goto(0, 2));
 }
@@ -55,16 +54,12 @@ pub fn clear_screen() {
 
 /// Handles user input and returns that input as a string.
 ///
-/// Args:
-///
-/// `height` - the terminal height
-///
 /// Returns:
 ///
 /// user input as string
-pub fn get_input(height: u16) -> String {
+pub fn get_input() -> String {
 
-    println!("{}", Goto(0, height - 3));
+    println!("{}", Goto(0, get_terminal_height() - 3));
 
     let mut input = String::new();
     stdin().read_line(&mut input).expect("cannot read input");
@@ -73,4 +68,15 @@ pub fn get_input(height: u16) -> String {
     println!("{}", Goto(0, 2));
 
     input.trim().to_string()
+}
+
+/// Determinates the terminal height through an external crate and returns it. Refactored as it is used multiple times. Calculating the height everytime might be a bad idea, but this is the simplest one to prevent passing the height to every function that need it.
+///
+/// Returns:
+///
+/// the terminal height
+fn get_terminal_height() -> u16 {
+
+    let (_, height) = terminal_size().unwrap();
+    height as u16
 }
