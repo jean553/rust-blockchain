@@ -109,8 +109,7 @@ fn main() {
     clear_screen();
 
     let mut chain: Vec<Block> = Vec::new();
-
-    println!("{}", Goto(0, 2));
+    let mut peers: Vec<SocketAddr> = Vec::new();
 
     loop {
 
@@ -128,6 +127,7 @@ fn main() {
         const SEND_BLOCKCHAIN_CHOICE: &str = "send";
         const RECEIVE_BLOCKCHAIN_CHOICE: &str = "receive";
         const SEE_BLOCKCHAIN_CHOICE: &str = "list";
+        const ADD_PEER_CHOICE: &str = "add_peer";
         const HELP_CHOICE: &str = "help";
 
         const PORT: &str = "10000";
@@ -171,7 +171,6 @@ fn main() {
             };
 
             let full_address = format!("{}:{}", address, PORT);
-
             let bind_address = match SocketAddr::from_str(&full_address) {
                 Ok(address) => address,
                 Err(_) => {
@@ -233,6 +232,25 @@ fn main() {
                 println!("Data: {} \n\n", content.get_data());
             }
         }
+        else if command == ADD_PEER_CHOICE {
+
+            let address = match splitted.get(1) {
+                Some(value) => value.trim(),
+                None => { continue; }
+            };
+
+            let full_address = format!("{}:{}", address, PORT);
+
+            match SocketAddr::from_str(&full_address) {
+                Ok(socket_address) => {
+                    peers.push(socket_address);
+                    println!("Address {} added to peers list.", address);
+                },
+                Err(_) => {
+                    println!("Incorrect address format.");
+                }
+            };
+        }
         else if command == HELP_CHOICE {
 
             /* TODO: should use command options */
@@ -242,7 +260,9 @@ fn main() {
             println!("send [ip] - send a copy of the blockchain to another node");
             println!("Example: send 172.17.0.10\n");
             println!("receive - receive a copy of the blockchain from another node\n");
-            println!("list - list the local chain blocks");
+            println!("list - list the local chain blocks\n");
+            println!("add_peer - add one node as a peer");
+            println!("Example: add_peer 172.17.0.10");
         }
     }
 }
