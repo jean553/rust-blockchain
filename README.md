@@ -23,6 +23,7 @@ A very simple blockchain in Rust.
  * `sha1`: sha1 hashing routines, in order to hash the previous block of the current created one,
  * `bincode`: serialization routines, used to serialize a block into raw binary (used for hashing),
  * `serde/serde_derive`: serialization/deserialization routines, in order to make a block "serializable"
+ * `termion`: provides terminal graphical routines
 
 ## Block structure
 
