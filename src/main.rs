@@ -141,8 +141,10 @@ fn main() {
         let input = get_input(height);
         let splitted: Vec<&str> = input.split(' ').collect();
 
-        let command = match splitted.get(0) {
-            Some(value) => value.trim(),
+        /* get() returns &&str, so we mention result type &str
+           and get it from a reference (*) */
+        let command: &str = match splitted.get(0) {
+            Some(value) => *value,
             None => { continue; }
         };
 
