@@ -14,7 +14,6 @@ mod help;
 mod display;
 
 use std::io::{
-    stdin,
     Write,
     Read,
 };
@@ -31,7 +30,6 @@ use bincode::{
     deserialize,
 };
 use termion::terminal_size;
-use termion::cursor::Goto;
 
 use block::Block;
 
@@ -51,31 +49,10 @@ use help::list_commands;
 use display::{
     set_status_text,
     clear_screen,
+    get_input,
 };
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
-
-/// Handles user input and returns that input as a string.
-///
-/// Args:
-///
-/// `height` - the terminal height
-///
-/// Returns:
-///
-/// user input as string
-fn get_input(height: u16) -> String {
-
-    println!("{}", Goto(0, height - 3));
-
-    let mut input = String::new();
-    stdin().read_line(&mut input).expect("cannot read input");
-
-    clear_screen();
-    println!("{}", Goto(0, 2));
-
-    input.trim().to_string()
-}
 
 /// Handle incoming TCP connections with other nodes.
 fn handle_incoming_connections() {

@@ -1,6 +1,7 @@
 //! Handle display routines.
 
 use std::iter;
+use std::io::stdin;
 
 use termion::{
     color,
@@ -50,4 +51,26 @@ pub fn clear_screen() {
     println!("{}", Goto(1, 1));
     const TITLE: &str = "rust-blockchain";
     display_text_bar(TITLE);
+}
+
+/// Handles user input and returns that input as a string.
+///
+/// Args:
+///
+/// `height` - the terminal height
+///
+/// Returns:
+///
+/// user input as string
+pub fn get_input(height: u16) -> String {
+
+    println!("{}", Goto(0, height - 3));
+
+    let mut input = String::new();
+    stdin().read_line(&mut input).expect("cannot read input");
+
+    clear_screen();
+    println!("{}", Goto(0, 2));
+
+    input.trim().to_string()
 }
