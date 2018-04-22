@@ -52,29 +52,6 @@ fn get_input(height: u16) -> String {
     input.trim().to_string()
 }
 
-/// Returns an address:port string from the user input. Refactored as used multiple times.
-///
-/// Args:
-///
-/// `height` - the terminal height
-///
-/// Returns:
-///
-/// bind address in "address:port" format
-fn get_bind_address_from_input(height: u16) -> String {
-
-    let input = get_input(height);
-    let address = input.trim();
-
-    const PORT: &str = "10000";
-
-    format!(
-        "{}:{}",
-        address,
-        PORT,
-    ).to_string()
-}
-
 /// Display text into a blue bar with a width that is as long as the terminal width. Refactored as it is used multiple times.
 ///
 /// Args:
