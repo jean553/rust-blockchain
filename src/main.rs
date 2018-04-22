@@ -35,7 +35,10 @@ mod blocks;
 
 use block::Block;
 
-use blocks::add_genesis_block;
+use blocks::{
+    add_genesis_block,
+    add_block,
+};
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
@@ -156,26 +159,18 @@ fn main() {
         if command == ADD_BLOCK_CHOICE {
 
             let data: i32 = match splitted.get(1) {
-                Some(value) => value.trim().parse().unwrap(),
+                Some(value) => value.parse().unwrap(),
                 None => { continue; }
             };
 
+            let chain = &mut chain;
+
             if chain.is_empty() {
-                add_genesis_block(&mut chain, data);
+                add_genesis_block(chain, data);
                 continue;
             }
 
-            let current_digest = chain.last()
-                .unwrap()
-                .get_current()
-                .to_string();
-
-            let block = Block::new(data, current_digest.clone());
-
-            println!("One block has been added to the ledger.");
-            println!("Current block digest: {}", block.get_current());
-
-            chain.push(block);
+            add_block(chain, data);
         }
         else if command == SEND_BLOCKCHAIN_CHOICE {
 

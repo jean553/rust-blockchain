@@ -17,3 +17,24 @@ pub fn add_genesis_block(chain: &mut Vec<Block>, data: i32) {
 
     chain.push(genesis);
 }
+
+/// Creates a standard block and appends it into the chain.
+///
+/// Args:
+///
+/// `chain` - the chain to modify
+/// `data` - the data to add
+pub fn add_block(chain: &mut Vec<Block>, data: i32) {
+
+    let current_digest = chain.last()
+        .unwrap()
+        .get_current()
+        .to_string();
+
+    let block = Block::new(data, current_digest.clone());
+
+    println!("One block has been added to the ledger.");
+    println!("Current block digest: {}", block.get_current());
+
+    chain.push(block);
+}
