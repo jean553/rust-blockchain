@@ -31,8 +31,11 @@ use termion::cursor::Goto;
 
 mod hash_content;
 mod block;
+mod blocks;
 
 use block::Block;
+
+use blocks::add_genesis_block;
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
@@ -158,14 +161,7 @@ fn main() {
             };
 
             if chain.is_empty() {
-
-                let genesis = Block::new(data, String::new());
-
-                println!("Genesis block has been generated.");
-                println!("Current block digest: {}", genesis.get_current());
-
-                chain.push(genesis);
-
+                add_genesis_block(&mut chain, data);
                 continue;
             }
 
