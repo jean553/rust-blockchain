@@ -32,6 +32,7 @@ use termion::cursor::Goto;
 mod hash_content;
 mod block;
 mod blocks;
+mod peers;
 
 use block::Block;
 
@@ -40,6 +41,8 @@ use blocks::{
     add_block,
     list_blocks,
 };
+
+use peers::create_peer;
 
 const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
@@ -171,8 +174,6 @@ fn main() {
             }
         };
 
-        const PORT: &str = "10000";
-
         if command == ADD_BLOCK {
 
             let data: i32 = option.parse().unwrap();
@@ -187,7 +188,9 @@ fn main() {
         }
         else if command == SEND_BLOCKCHAIN {
 
-            let full_address = format!("{}:{}", option, PORT);
+            /* TODO: should be done automatically when add a new block */
+
+            let full_address = format!("{}:10000", option);
             let bind_address = match SocketAddr::from_str(&full_address) {
                 Ok(address) => address,
                 Err(_) => {
@@ -243,18 +246,7 @@ fn main() {
             list_blocks(&chain);
         }
         else if command == ADD_PEER {
-
-            let full_address = format!("{}:{}", option, PORT);
-
-            match SocketAddr::from_str(&full_address) {
-                Ok(socket_address) => {
-                    peers.push(socket_address);
-                    println!("Address {} added to peers list.", option);
-                },
-                Err(_) => {
-                    println!("Incorrect address format.");
-                }
-            };
+            create_peer(&mut peers, option);
         }
         else if command == LIST_PEERS {
 
