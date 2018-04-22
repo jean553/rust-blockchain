@@ -18,6 +18,7 @@ use std::net::{
 };
 use std::time::Duration;
 use std::str::FromStr;
+use std::thread::spawn;
 use bincode::{
     serialize,
     deserialize,
@@ -101,6 +102,20 @@ fn clear_screen() {
     );
 }
 
+/// Handle incoming TCP connections with other nodes.
+fn handle_incoming_connections() {
+
+    let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
+
+    for income in listener.incoming() {
+
+        /* TODO: display message when receive a connection;
+           should use mutex as it must modify the content
+           of the main text area (so the cursor position
+           must not be modified) */
+    }
+}
+
 fn main() {
 
     let (_, height) = terminal_size().unwrap();
@@ -110,6 +125,8 @@ fn main() {
 
     let mut chain: Vec<Block> = Vec::new();
     let mut peers: Vec<SocketAddr> = Vec::new();
+
+    spawn(|| { handle_incoming_connections() });
 
     loop {
 
