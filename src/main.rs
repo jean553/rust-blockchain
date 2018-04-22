@@ -58,15 +58,13 @@ fn get_input(height: u16) -> String {
     input.trim().to_string()
 }
 
-/// Display text into a blue bar with a width that is as long as the terminal width. Refactored as it is used multiple times.
+/// Display the given text into an horizontal bar.
 ///
 /// Args:
 ///
 /// `text` - the text to display into the text bar
-/// `height` - the height of the terminal screen
-fn set_status_text(text: &str, height: u16) {
+fn display_text_bar(text: &str) {
 
-    println!("{}", Goto(0, height - 2));
     println!(
         "{}{}{}{}{}{}",
         color::Bg(color::Blue),
@@ -78,6 +76,18 @@ fn set_status_text(text: &str, height: u16) {
         color::Bg(color::Reset),
         color::Fg(color::Reset),
     );
+}
+
+/// Update the content of the status text bar.
+///
+/// Args:
+///
+/// `text` - the text to display into the text bar
+/// `height` - the height of the terminal screen
+fn set_status_text(text: &str, height: u16) {
+
+    println!("{}", Goto(0, height - 2));
+    display_text_bar(text);
     println!("{}", Goto(0, 2));
 }
 
@@ -89,17 +99,7 @@ fn clear_screen() {
 
     println!("{}", Goto(1, 1));
     const TITLE: &str = "rust-blockchain";
-    println!(
-        "{}{}{}{}{}{}",
-        color::Bg(color::Blue),
-        color::Fg(color::White),
-        TITLE,
-        std::iter::repeat(' ')
-            .take(terminal_size().unwrap().0 as usize - TITLE.len())
-            .collect::<String>(),
-        color::Bg(color::Reset),
-        color::Fg(color::Reset),
-    );
+    display_text_bar(TITLE);
 }
 
 /// Handle incoming TCP connections with other nodes.
