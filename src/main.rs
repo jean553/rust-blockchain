@@ -154,15 +154,25 @@ fn main() {
         const LIST_PEERS_CHOICE: &str = "list_peers";
         const HELP_CHOICE: &str = "help";
 
+        let option = match splitted.get(1) {
+            Some(option) => option,
+            None => {
+
+                if command == ADD_BLOCK_CHOICE ||
+                    command == SEND_BLOCKCHAIN_CHOICE ||
+                    command == ADD_PEER_CHOICE {
+                    continue;
+                }
+
+                ""
+            }
+        };
+
         const PORT: &str = "10000";
 
         if command == ADD_BLOCK_CHOICE {
 
-            let data: i32 = match splitted.get(1) {
-                Some(value) => value.parse().unwrap(),
-                None => { continue; }
-            };
-
+            let data: i32 = option.parse().unwrap();
             let chain = &mut chain;
 
             if chain.is_empty() {
@@ -174,12 +184,7 @@ fn main() {
         }
         else if command == SEND_BLOCKCHAIN_CHOICE {
 
-            let address = match splitted.get(1) {
-                Some(value) => value.trim(),
-                None => { continue; }
-            };
-
-            let full_address = format!("{}:{}", address, PORT);
+            let full_address = format!("{}:{}", option, PORT);
             let bind_address = match SocketAddr::from_str(&full_address) {
                 Ok(address) => address,
                 Err(_) => {
@@ -188,7 +193,7 @@ fn main() {
                 }
             };
 
-            set_status_text(&format!("Trying to connect to {}...", address), height);
+            set_status_text(&format!("Trying to connect to {}...", option), height);
 
             let mut stream = match TcpStream::connect_timeout(
                 &bind_address,
@@ -243,17 +248,12 @@ fn main() {
         }
         else if command == ADD_PEER_CHOICE {
 
-            let address = match splitted.get(1) {
-                Some(value) => value.trim(),
-                None => { continue; }
-            };
-
-            let full_address = format!("{}:{}", address, PORT);
+            let full_address = format!("{}:{}", option, PORT);
 
             match SocketAddr::from_str(&full_address) {
                 Ok(socket_address) => {
                     peers.push(socket_address);
-                    println!("Address {} added to peers list.", address);
+                    println!("Address {} added to peers list.", option);
                 },
                 Err(_) => {
                     println!("Incorrect address format.");
