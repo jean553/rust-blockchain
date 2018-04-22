@@ -193,10 +193,15 @@ fn main() {
                 }
             };
 
+            /* halt the program if serialization fails or socket write fails;
+               this is not something the user can solve, and something is clearly wrong... */
+
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes).unwrap();
         }
         else if command == RECEIVE_BLOCKCHAIN_CHOICE {
+
+            /* TODO: #33 not refactored by now, this should be handled by a separated thread */
 
             let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
@@ -236,7 +241,7 @@ fn main() {
             println!("Example: add_block 10 \n");
             println!("send [ip] - send a copy of the blockchain to another node");
             println!("Example: send 172.17.0.10\n");
-            println!("receive - receive a copy of the blockchain from another node");
+            println!("receive - receive a copy of the blockchain from another node\n");
             println!("list - list the local chain blocks");
         }
     }
