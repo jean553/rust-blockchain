@@ -6,6 +6,12 @@ extern crate termion;
 extern crate serde;
 #[macro_use] extern crate serde_derive;
 
+mod hash_content;
+mod block;
+mod blocks;
+mod peers;
+mod help;
+
 use std::io::{
     stdin,
     Write,
@@ -28,12 +34,6 @@ use termion::{
     terminal_size,
 };
 use termion::cursor::Goto;
-
-mod hash_content;
-mod block;
-mod blocks;
-mod peers;
-mod help;
 
 use block::Block;
 
