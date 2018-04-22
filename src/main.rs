@@ -14,7 +14,10 @@ use std::io::{
 use std::net::{
     TcpListener,
     TcpStream,
+    SocketAddr,
 };
+use std::time::Duration;
+use std::str::FromStr;
 use bincode::{
     serialize,
     deserialize,
@@ -29,6 +32,8 @@ mod hash_content;
 mod block;
 
 use block::Block;
+
+const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
 /// Handles user input and returns that input as a string.
 ///
@@ -46,7 +51,7 @@ fn get_input(height: u16) -> String {
     let mut input = String::new();
     stdin().read_line(&mut input).expect("cannot read input");
 
-    clear_screen(height);
+    clear_screen();
     println!("{}", Goto(0, 2));
 
     input.trim().to_string()
@@ -57,8 +62,10 @@ fn get_input(height: u16) -> String {
 /// Args:
 ///
 /// `text` - the text to display into the text bar
-fn display_text_bar(text: &str) {
+/// `height` - the height of the terminal screen
+fn display_text_bar(text: &str, height: u16) {
 
+    println!("{}", Goto(0, height - 2));
     println!(
         "{}{}{}{}{}{}",
         color::Bg(color::Blue),
@@ -70,23 +77,28 @@ fn display_text_bar(text: &str) {
         color::Bg(color::Reset),
         color::Fg(color::Reset),
     );
+    println!("{}", Goto(0, 2));
 }
 
 /// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times and definition might not be clear.
-///
-/// Args:
-///
-/// `height` - the terminal height
-fn clear_screen(height: u16) {
+fn clear_screen() {
 
     /* send a control character to the terminal */
     print!("{}[2J", 27 as char);
 
     println!("{}", Goto(1, 1));
-    display_text_bar("rust-blockchain");
-
-    println!("{}", Goto(0, height - 1));
-    display_text_bar("Waiting. Type 'help' to get the commands list.");
+    const TITLE: &str = "rust-blockchain";
+    println!(
+        "{}{}{}{}{}{}",
+        color::Bg(color::Blue),
+        color::Fg(color::White),
+        TITLE,
+        std::iter::repeat(' ')
+            .take(terminal_size().unwrap().0 as usize - TITLE.len())
+            .collect::<String>(),
+        color::Bg(color::Reset),
+        color::Fg(color::Reset),
+    );
 }
 
 fn main() {
@@ -94,13 +106,15 @@ fn main() {
     let (_, height) = terminal_size().unwrap();
     let height = height as u16;
 
-    clear_screen(height);
+    clear_screen();
 
     let mut chain: Vec<Block> = Vec::new();
 
     println!("{}", Goto(0, 2));
 
     loop {
+
+        display_text_bar(DEFAULT_STATUS, height);
 
         let input = get_input(height);
         let splitted: Vec<&str> = input.split(' ').collect();
@@ -157,7 +171,27 @@ fn main() {
             };
 
             let full_address = format!("{}:{}", address, PORT);
-            let mut stream = TcpStream::connect(full_address).unwrap();
+
+            let bind_address = match SocketAddr::from_str(&full_address) {
+                Ok(address) => address,
+                Err(_) => {
+                    println!("Incorrect address format.");
+                    continue;
+                }
+            };
+
+            display_text_bar(&format!("Trying to connect to {}...", address), height);
+
+            let mut stream = match TcpStream::connect_timeout(
+                &bind_address,
+                Duration::from_secs(5),
+            ) {
+                Ok(stream) => stream,
+                Err(_) => {
+                    println!("Cannot connect to the given node.");
+                    continue;
+                }
+            };
 
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes).unwrap();
