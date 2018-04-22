@@ -200,7 +200,8 @@ fn main() {
 
             println!("add_block [data] - append a block into the local blockchain");
             println!("Example: add_block 10 \n");
-            println!("send - send a copy of the blockchain to another node");
+            println!("send [ip] - send a copy of the blockchain to another node");
+            println!("Example: send 172.17.0.10\n");
             println!("receive - receive a copy of the blockchain from another node");
             println!("list - list the local chain blocks");
         }
