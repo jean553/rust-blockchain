@@ -146,21 +146,21 @@ fn main() {
             None => { continue; }
         };
 
-        const ADD_BLOCK_CHOICE: &str = "add_block";
-        const SEND_BLOCKCHAIN_CHOICE: &str = "send";
-        const RECEIVE_BLOCKCHAIN_CHOICE: &str = "receive";
-        const SEE_BLOCKCHAIN_CHOICE: &str = "list";
-        const ADD_PEER_CHOICE: &str = "add_peer";
-        const LIST_PEERS_CHOICE: &str = "list_peers";
-        const HELP_CHOICE: &str = "help";
+        const ADD_BLOCK: &str = "add_block";
+        const SEND_BLOCKCHAIN: &str = "send";
+        const RECEIVE_BLOCKCHAIN: &str = "receive";
+        const SEE_BLOCKCHAIN: &str = "list";
+        const ADD_PEER: &str = "add_peer";
+        const LIST_PEERS: &str = "list_peers";
+        const HELP: &str = "help";
 
         let option = match splitted.get(1) {
             Some(option) => option,
             None => {
 
-                if command == ADD_BLOCK_CHOICE ||
-                    command == SEND_BLOCKCHAIN_CHOICE ||
-                    command == ADD_PEER_CHOICE {
+                if command == ADD_BLOCK ||
+                    command == SEND_BLOCKCHAIN ||
+                    command == ADD_PEER {
                     continue;
                 }
 
@@ -170,7 +170,7 @@ fn main() {
 
         const PORT: &str = "10000";
 
-        if command == ADD_BLOCK_CHOICE {
+        if command == ADD_BLOCK {
 
             let data: i32 = option.parse().unwrap();
             let chain = &mut chain;
@@ -182,7 +182,7 @@ fn main() {
 
             add_block(chain, data);
         }
-        else if command == SEND_BLOCKCHAIN_CHOICE {
+        else if command == SEND_BLOCKCHAIN {
 
             let full_address = format!("{}:{}", option, PORT);
             let bind_address = match SocketAddr::from_str(&full_address) {
@@ -212,7 +212,7 @@ fn main() {
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes).unwrap();
         }
-        else if command == RECEIVE_BLOCKCHAIN_CHOICE {
+        else if command == RECEIVE_BLOCKCHAIN {
 
             /* TODO: #33 not refactored by now, this should be handled by a separated thread */
 
@@ -236,7 +236,7 @@ fn main() {
                 chain = received_chain;
             }
         }
-        else if command == SEE_BLOCKCHAIN_CHOICE {
+        else if command == SEE_BLOCKCHAIN {
 
             for block in chain.iter() {
 
@@ -246,7 +246,7 @@ fn main() {
                 println!("Data: {} \n\n", content.get_data());
             }
         }
-        else if command == ADD_PEER_CHOICE {
+        else if command == ADD_PEER {
 
             let full_address = format!("{}:{}", option, PORT);
 
@@ -260,14 +260,14 @@ fn main() {
                 }
             };
         }
-        else if command == LIST_PEERS_CHOICE {
+        else if command == LIST_PEERS {
 
             for peer in peers.iter() {
 
                 println!("{}", peer.to_string());
             }
         }
-        else if command == HELP_CHOICE {
+        else if command == HELP {
 
             /* TODO: should use command options */
 
