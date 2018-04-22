@@ -46,12 +46,11 @@ use peers::{
 use help::list_commands;
 
 use display::{
+    DEFAULT_STATUS,
     set_status_text,
     clear_screen,
     get_input,
 };
-
-const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
 
 /// Handle incoming TCP connections with other nodes.
 fn handle_incoming_connections() {

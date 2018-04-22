@@ -9,6 +9,8 @@ use termion::{
 };
 use termion::cursor::Goto;
 
+pub const DEFAULT_STATUS: &str = "Waiting. Type 'help' to get the commands list.";
+
 /// Display the given text into an horizontal bar. Refactored here as it is used when the screen is reset but also when the status bar content is updated.
 ///
 /// Args:
