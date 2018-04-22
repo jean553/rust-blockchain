@@ -126,6 +126,12 @@ fn main() {
     loop {
 
         let input = get_input(height);
+        let splitted: Vec<&str> = input.split(' ').collect();
+
+        let command = match splitted.get(0) {
+            Some(value) => value.trim(),
+            None => { continue; }
+        };
 
         const ADD_BLOCK_CHOICE: &str = "add_block";
         const SEND_BLOCKCHAIN_CHOICE: &str = "send";
@@ -133,16 +139,16 @@ fn main() {
         const SEE_BLOCKCHAIN_CHOICE: &str = "list";
         const HELP_CHOICE: &str = "help";
 
-        if input == ADD_BLOCK_CHOICE {
+        if command == ADD_BLOCK_CHOICE {
 
-            println!("Data of the block:");
-
-            let input = get_input(height);
-            let data: i32 = input.trim().parse().unwrap();
+            let data: i32 = match splitted.get(1) {
+                Some(value) => value.trim().parse().unwrap(),
+                None => { continue; }
+            };
 
             if chain.is_empty() {
 
-                let genesis = Block::new(0, String::new());
+                let genesis = Block::new(data, String::new());
 
                 println!("Genesis block has been generated.");
                 println!("Current block digest: {}", genesis.get_current());
@@ -164,7 +170,7 @@ fn main() {
 
             chain.push(block);
         }
-        else if input == SEND_BLOCKCHAIN_CHOICE {
+        else if command == SEND_BLOCKCHAIN_CHOICE {
 
             println!("Send blockchain to node at IP:");
 
@@ -174,7 +180,7 @@ fn main() {
             let bytes = serialize(&chain).unwrap();
             stream.write(&bytes).unwrap();
         }
-        else if input == RECEIVE_BLOCKCHAIN_CHOICE {
+        else if command == RECEIVE_BLOCKCHAIN_CHOICE {
 
             let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
@@ -196,7 +202,7 @@ fn main() {
                 chain = received_chain;
             }
         }
-        else if input == SEE_BLOCKCHAIN_CHOICE {
+        else if command == SEE_BLOCKCHAIN_CHOICE {
 
             for block in chain.iter() {
 
@@ -206,11 +212,12 @@ fn main() {
                 println!("Data: {} \n\n", content.get_data());
             }
         }
-        else if input == HELP_CHOICE {
+        else if command == HELP_CHOICE {
 
             /* TODO: should use command options */
 
-            println!("add_block - append a block into the local blockchain");
+            println!("add_block [data] - append a block into the local blockchain");
+            println!("Example: add_block 10 \n");
             println!("send - send a copy of the blockchain to another node");
             println!("receive - receive a copy of the blockchain from another node");
             println!("list - list the local chain blocks");
