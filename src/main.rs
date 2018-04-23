@@ -32,7 +32,10 @@ use bincode::{
 
 use block::Block;
 
-use blocks::list_blocks;
+use blocks::{
+    list_blocks,
+    broadcast_block,
+};
 
 use peers::{
     create_peer,
@@ -122,9 +125,12 @@ fn main() {
                     .to_string();
             }
 
-            chain.push(Block::new(data, previous_digest));
+            let block = Block::new(data, previous_digest);
+            chain.push(block.clone());
 
             println!("New block added.");
+
+            broadcast_block(&peers, block);
         }
         else if command == SEND_BLOCKCHAIN {
 
