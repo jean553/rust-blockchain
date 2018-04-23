@@ -111,7 +111,7 @@ fn main() {
         };
 
         const ADD_BLOCK: &str = "add_block";
-        const SEE_BLOCKCHAIN: &str = "list";
+        const SEE_BLOCKCHAIN: &str = "list_blocks";
         const ADD_PEER: &str = "add_peer";
         const LIST_PEERS: &str = "list_peers";
         const HELP: &str = "help";

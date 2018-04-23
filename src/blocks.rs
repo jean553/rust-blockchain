@@ -15,7 +15,10 @@ use bincode::serialize;
 
 use block::Block;
 
-use display::set_status_text;
+use display::{
+    set_status_text,
+    DEFAULT_STATUS,
+};
 
 /// Displays the blockchain blocks.
 ///
@@ -68,5 +71,9 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
         };
 
         stream.write(&bytes).unwrap();
+
+        println!("Block sent to {}.", address);
     }
+
+    set_status_text(DEFAULT_STATUS);
 }
