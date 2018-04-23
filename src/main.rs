@@ -49,6 +49,8 @@ use display::{
     set_status_text,
     clear_screen,
     get_input,
+    set_cursor_into_logs,
+    set_cursor_into_input,
 };
 
 /// Handle incoming TCP connections with other nodes.
@@ -63,15 +65,20 @@ fn handle_incoming_connections() {
            of the main text area (so the cursor position
            must not be modified) */
 
-        let connection = match income {
-            Ok(connection) => connection,
-            Err(_) => {
-                println!("Cannot handle received connection.");
-                continue;
-            }
-        };
+        set_cursor_into_logs();
 
-        println!("Received block from {}.", connection.peer_addr().unwrap());
+        let mut stream = income.unwrap();
+        println!("Received block from {}.", stream.peer_addr().unwrap());
+
+        let mut buffer: Vec<u8> = Vec::new();
+
+        stream.read_to_end(&mut buffer).unwrap();
+
+        let block: Block = deserialize(&buffer).unwrap();
+
+        /* FIXME: add the block into the local chain */
+
+        set_cursor_into_input();
     }
 }
 
