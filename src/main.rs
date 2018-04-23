@@ -49,6 +49,8 @@ use display::{
     set_status_text,
     clear_screen,
     get_input,
+    set_cursor_into_logs,
+    set_cursor_into_input,
 };
 
 /// Handle incoming TCP connections with other nodes.
@@ -63,6 +65,8 @@ fn handle_incoming_connections() {
            of the main text area (so the cursor position
            must not be modified) */
 
+        set_cursor_into_logs();
+
         let connection = match income {
             Ok(connection) => connection,
             Err(_) => {
@@ -72,6 +76,8 @@ fn handle_incoming_connections() {
         };
 
         println!("Received block from {}.", connection.peer_addr().unwrap());
+
+        set_cursor_into_input();
     }
 }
 

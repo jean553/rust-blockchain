@@ -40,7 +40,7 @@ pub fn set_status_text(text: &str) {
 
     println!("{}", Goto(0, get_terminal_height() - 2));
     display_text_bar(text);
-    println!("{}", Goto(0, 2));
+    set_cursor_into_logs();
 }
 
 /// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times.
@@ -61,13 +61,14 @@ pub fn clear_screen() {
 /// user input as string
 pub fn get_input() -> String {
 
-    println!("{}", Goto(0, get_terminal_height() - 3));
+    set_cursor_into_input();
 
     let mut input = String::new();
     stdin().read_line(&mut input).expect("cannot read input");
 
     clear_screen();
-    println!("{}", Goto(0, 2));
+
+    set_cursor_into_logs();
 
     input.trim().to_string()
 }
@@ -81,4 +82,14 @@ fn get_terminal_height() -> u16 {
 
     let (_, height) = terminal_size().unwrap();
     height as u16
+}
+
+/// Set the cursor position at the logs area.
+pub fn set_cursor_into_logs() {
+    println!("{}", Goto(0, 2));
+}
+
+/// Set the cursor position at the input area.
+pub fn set_cursor_into_input() {
+    println!("{}", Goto(0, get_terminal_height() - 3));
 }
