@@ -41,6 +41,8 @@ pub fn set_status_text(text: &str) {
 
     println!("{}", Goto(0, get_terminal_height() - 2));
     display_text_bar(text);
+
+    /* FIXME: #47 should move back the cursor to its previous location */
     set_cursor_into_logs();
 }
 
