@@ -6,6 +6,10 @@ use std::net::{
 };
 use std::time::Duration;
 use std::io::Write;
+use std::sync::{
+    Arc,
+    Mutex,
+};
 
 use bincode::serialize;
 
@@ -18,7 +22,9 @@ use display::set_status_text;
 /// Args:
 ///
 /// `chain` - the chain to modify
-pub fn list_blocks(chain: &Vec<Block>) {
+pub fn list_blocks(chain: &Arc<Mutex<Vec<Block>>>) {
+
+    let chain = chain.lock().unwrap();
 
     for block in chain.iter() {
 
