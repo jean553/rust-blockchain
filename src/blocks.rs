@@ -5,6 +5,9 @@ use std::net::{
     SocketAddr,
 };
 use std::time::Duration;
+use std::io::Write;
+
+use bincode::serialize;
 
 use block::Block;
 
@@ -34,6 +37,11 @@ pub fn list_blocks(chain: &Vec<Block>) {
 /// `block` - the block object to send
 pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
 
+    /* we voluntary halt the program if serialization and stream buffer write fails;
+       in fact, if these problem happen, that means something is clearly wrong */
+
+    let bytes = serialize(&block).unwrap();
+
     for peer in peers.iter() {
 
         let address: String = peer.to_string();
@@ -52,5 +60,7 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
                 continue;
             }
         };
+
+        stream.write(&bytes).unwrap();
     }
 }
