@@ -62,6 +62,16 @@ fn handle_incoming_connections() {
            should use mutex as it must modify the content
            of the main text area (so the cursor position
            must not be modified) */
+
+        let connection = match income {
+            Ok(connection) => connection,
+            Err(_) => {
+                println!("Cannot handle received connection.");
+                continue;
+            }
+        };
+
+        println!("Received block from {}.", connection.peer_addr().unwrap());
     }
 }
 
