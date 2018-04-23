@@ -13,22 +13,18 @@ mod peers;
 mod help;
 mod display;
 
-use std::io::{
-    Write,
-    Read,
-};
+use std::io::Read;
 use std::net::{
     TcpListener,
-    TcpStream,
     SocketAddr,
 };
-use std::time::Duration;
-use std::str::FromStr;
 use std::thread::spawn;
-use bincode::{
-    serialize,
-    deserialize,
+use std::sync::{
+    Arc,
+    Mutex,
 };
+
+use bincode::deserialize;
 
 use block::Block;
 
@@ -86,7 +82,7 @@ fn main() {
 
     clear_screen();
 
-    let mut chain: Vec<Block> = Vec::new();
+    let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
     let mut peers: Vec<SocketAddr> = Vec::new();
 
     spawn(|| { handle_incoming_connections() });
@@ -130,7 +126,7 @@ fn main() {
         if command == ADD_BLOCK {
 
             let data: i32 = option.parse().unwrap();
-            let chain = &mut chain;
+            let mut chain = chain.lock().unwrap();
 
             let mut previous_digest = String::new();
 
