@@ -6,6 +6,7 @@ use std::io::stdin;
 use termion::{
     color,
     terminal_size,
+    clear,
 };
 use termion::cursor::Goto;
 
@@ -46,8 +47,7 @@ pub fn set_status_text(text: &str) {
 /// Clear the whole terminal content and generate the default content (bars and titles). Refactored as used multiple times.
 pub fn clear_screen() {
 
-    /* send a control character to the terminal */
-    print!("{}[2J", 27 as char);
+    println!("{}", clear::All);
 
     println!("{}", Goto(1, 1));
     const TITLE: &str = "rust-blockchain";
