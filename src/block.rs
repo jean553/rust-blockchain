@@ -5,7 +5,7 @@ use sha1::Sha1;
 
 use hash_content::HashContent;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Block {
     content: HashContent,
     previous: String,

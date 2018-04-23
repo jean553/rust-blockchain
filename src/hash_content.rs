@@ -2,7 +2,7 @@
 
 use time;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct HashContent {
     timestamp: i64,
     data: i32,
