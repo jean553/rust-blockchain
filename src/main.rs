@@ -67,15 +67,16 @@ fn handle_incoming_connections() {
 
         set_cursor_into_logs();
 
-        let connection = match income {
-            Ok(connection) => connection,
-            Err(_) => {
-                println!("Cannot handle received connection.");
-                continue;
-            }
-        };
+        let mut stream = income.unwrap();
+        println!("Received block from {}.", stream.peer_addr().unwrap());
 
-        println!("Received block from {}.", connection.peer_addr().unwrap());
+        let mut buffer: Vec<u8> = Vec::new();
+
+        stream.read_to_end(&mut buffer).unwrap();
+
+        let block: Block = deserialize(&buffer).unwrap();
+
+        /* FIXME: add the block into the local chain */
 
         set_cursor_into_input();
     }
