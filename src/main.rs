@@ -102,8 +102,6 @@ fn main() {
         };
 
         const ADD_BLOCK: &str = "add_block";
-        const SEND_BLOCKCHAIN: &str = "send";
-        const RECEIVE_BLOCKCHAIN: &str = "receive";
         const SEE_BLOCKCHAIN: &str = "list";
         const ADD_PEER: &str = "add_peer";
         const LIST_PEERS: &str = "list_peers";
@@ -114,7 +112,6 @@ fn main() {
             None => {
 
                 if command == ADD_BLOCK ||
-                    command == SEND_BLOCKCHAIN ||
                     command == ADD_PEER {
                     continue;
                 }
@@ -144,62 +141,6 @@ fn main() {
             println!("New block added.");
 
             broadcast_block(&peers, block);
-        }
-        else if command == SEND_BLOCKCHAIN {
-
-            /* TODO: should be done automatically when add a new block */
-
-            let full_address = format!("{}:10000", option);
-            let bind_address = match SocketAddr::from_str(&full_address) {
-                Ok(address) => address,
-                Err(_) => {
-                    println!("Incorrect address format.");
-                    continue;
-                }
-            };
-
-            set_status_text(&format!("Trying to connect to {}...", option));
-
-            let mut stream = match TcpStream::connect_timeout(
-                &bind_address,
-                Duration::from_secs(5),
-            ) {
-                Ok(stream) => stream,
-                Err(_) => {
-                    println!("Cannot connect to the given node.");
-                    continue;
-                }
-            };
-
-            /* halt the program if serialization fails or socket write fails;
-               this is not something the user can solve, and something is clearly wrong... */
-
-            let bytes = serialize(&chain).unwrap();
-            stream.write(&bytes).unwrap();
-        }
-        else if command == RECEIVE_BLOCKCHAIN {
-
-            /* TODO: #33 not refactored by now, this should be handled by a separated thread */
-
-            let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
-
-            println!("Waiting for connection...");
-
-            let connection = listener.accept().unwrap();
-
-            println!("Connection received.");
-
-            let mut buffer: Vec<u8> = Vec::new();
-            let mut stream = connection.0;
-
-            stream.read_to_end(&mut buffer).unwrap();
-
-            /* TODO: check integrity of the received chain */
-
-            let received_chain: Vec<Block> = deserialize(&buffer).unwrap();
-            if received_chain.len() > chain.len() {
-                chain = received_chain;
-            }
         }
         else if command == SEE_BLOCKCHAIN {
             list_blocks(&chain);
