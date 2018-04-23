@@ -50,7 +50,11 @@ use display::{
 };
 
 /// Handle incoming TCP connections with other nodes.
-fn handle_incoming_connections() {
+///
+/// Args:
+///
+/// `chain` - the chain to manipulate
+fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
 
     let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
@@ -64,15 +68,19 @@ fn handle_incoming_connections() {
         set_cursor_into_logs();
 
         let mut stream = income.unwrap();
-        println!("Received block from {}.", stream.peer_addr().unwrap());
 
         let mut buffer: Vec<u8> = Vec::new();
-
         stream.read_to_end(&mut buffer).unwrap();
 
         let block: Block = deserialize(&buffer).unwrap();
 
-        /* FIXME: add the block into the local chain */
+        let mut chain = chain.lock().unwrap();
+        chain.push(block);
+
+        println!(
+            "Block from {} has been added to the chain.",
+            stream.peer_addr().unwrap(),
+        );
 
         set_cursor_into_input();
     }
@@ -85,7 +93,8 @@ fn main() {
     let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
     let mut peers: Vec<SocketAddr> = Vec::new();
 
-    spawn(|| { handle_incoming_connections() });
+    let listener_chain = chain.clone();
+    spawn(|| { handle_incoming_connections(listener_chain) });
 
     loop {
 
