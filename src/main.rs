@@ -41,8 +41,6 @@ use peers::{
 use help::list_commands;
 
 use display::{
-    DEFAULT_STATUS,
-    set_status_text,
     clear_screen,
     get_input,
     set_cursor_into_logs,

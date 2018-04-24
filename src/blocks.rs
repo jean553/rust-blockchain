@@ -15,11 +15,6 @@ use bincode::serialize;
 
 use block::Block;
 
-use display::{
-    set_status_text,
-    DEFAULT_STATUS,
-};
-
 /// Displays the blockchain blocks.
 ///
 /// Args:
