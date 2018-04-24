@@ -41,8 +41,6 @@ use peers::{
 use help::list_commands;
 
 use display::{
-    DEFAULT_STATUS,
-    set_status_text,
     clear_screen,
     get_input,
     set_cursor_into_logs,
@@ -90,6 +88,8 @@ fn main() {
 
     clear_screen();
 
+    println!("Type 'help' to list commands.");
+
     let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
     let mut peers: Vec<SocketAddr> = Vec::new();
 
@@ -97,8 +97,6 @@ fn main() {
     spawn(|| { handle_incoming_connections(listener_chain) });
 
     loop {
-
-        set_status_text(DEFAULT_STATUS);
 
         let input = get_input();
         let splitted: Vec<&str> = input.split(' ').collect();

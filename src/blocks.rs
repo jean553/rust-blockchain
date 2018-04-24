@@ -15,11 +15,6 @@ use bincode::serialize;
 
 use block::Block;
 
-use display::{
-    set_status_text,
-    DEFAULT_STATUS,
-};
-
 /// Displays the blockchain blocks.
 ///
 /// Args:
@@ -57,7 +52,7 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
         let address_part: Vec<&str> = address.split(':').collect();
         let address = address_part.get(0).unwrap();
 
-        set_status_text(&format!("Connecting to {}...", address));
+        println!("Connecting to {}...", address);
 
         let mut stream = match TcpStream::connect_timeout(
             &peer,
@@ -75,5 +70,5 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
         println!("Block sent to {}.", address);
     }
 
-    set_status_text(DEFAULT_STATUS);
+    println!("Block creation broadcast terminated.");
 }
