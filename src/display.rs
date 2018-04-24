@@ -41,6 +41,8 @@ pub fn clear_screen() {
 
     println!("{}", Goto(0, get_terminal_height() - 3));
     display_text_bar("");
+
+    println!("{}", Goto(0, 2));
 }
 
 /// Handles user input and returns that input as a string.

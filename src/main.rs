@@ -88,6 +88,8 @@ fn main() {
 
     clear_screen();
 
+    println!("Type 'help' to list commands.");
+
     let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
     let mut peers: Vec<SocketAddr> = Vec::new();
 
@@ -95,8 +97,6 @@ fn main() {
     spawn(|| { handle_incoming_connections(listener_chain) });
 
     loop {
-
-        println!("Type 'help' to list commands.");
 
         let input = get_input();
         let splitted: Vec<&str> = input.split(' ').collect();
