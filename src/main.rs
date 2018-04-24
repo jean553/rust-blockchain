@@ -96,7 +96,7 @@ fn main() {
 
     loop {
 
-        set_status_text(DEFAULT_STATUS);
+        println!("Type 'help' to list commands.");
 
         let input = get_input();
         let splitted: Vec<&str> = input.split(' ').collect();
