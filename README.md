@@ -17,6 +17,9 @@ A very simple blockchain in Rust.
  * [Find peers](#find-peers)
     - [Manually add a peer](#manually-add-a-peer)
     - [List peers](#list-peers)
+ * [Blocks](#blocks)
+    - [Add block](#add-block)
+    - [List blocks](#list-blocks)
 
 ## Dependencies
 
@@ -112,4 +115,26 @@ add_peer 172.0.0.10
 
 ```sh
 list_peers
+```
+
+## Blocks
+
+This section is about chain blocks.
+
+### Add block
+
+Add a block and broadcast it to every peer.
+
+For example, to add a block with the data `20`:
+
+```sh
+add_block 20
+```
+
+### List blocks
+
+List all the blocks of the local chain:
+
+```sh
+list_blocks
 ```
