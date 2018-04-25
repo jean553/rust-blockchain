@@ -160,6 +160,8 @@ fn main() {
         }
         else if command == HELP {
             list_commands();
+        } else {
+            println!("Command not found. Type 'help' to list commands.");
         }
     }
 }
