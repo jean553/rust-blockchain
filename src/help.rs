@@ -8,5 +8,6 @@ pub fn list_commands() {
     println!("list_blocks - list the local chain blocks\n");
     println!("add_peer - add one node as a peer");
     println!("Example: add_peer 172.17.0.10\n");
-    println!("list_peers - list the peers");
+    println!("list_peers - list the peers\n");
+    println!("exit - quit the program");
 }
