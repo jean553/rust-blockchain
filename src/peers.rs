@@ -43,6 +43,10 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
             return;
         }
     };
+
+    /* TODO: the peer sends its last block: if the current local chain is empty
+       or if the received last block from the peer is not the same one
+       as the local one, then, the whole local chain is updated */
 }
 
 /// Displays all the peers.
