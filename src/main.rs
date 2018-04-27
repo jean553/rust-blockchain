@@ -112,6 +112,7 @@ fn main() {
         const SEE_BLOCKCHAIN: &str = "list_blocks";
         const ADD_PEER: &str = "add_peer";
         const LIST_PEERS: &str = "list_peers";
+        const EXIT: &str = "exit";
         const HELP: &str = "help";
 
         let option = match splitted.get(1) {
@@ -160,6 +161,9 @@ fn main() {
         }
         else if command == HELP {
             list_commands();
+        }
+        else if command == EXIT {
+            break;
         } else {
             println!("Command not found. Type 'help' to list commands.");
         }
