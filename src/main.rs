@@ -56,6 +56,7 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
 
     let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
 
+    /* blocks until data is received */
     for income in listener.incoming() {
 
         /* TODO: display message when receive a connection;
@@ -66,8 +67,9 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
         set_cursor_into_logs();
 
         let mut stream = income.unwrap();
-
         let mut buffer: Vec<u8> = Vec::new();
+
+        /* blocks until data is received  */
         stream.read_to_end(&mut buffer).unwrap();
 
         let block: Block = deserialize(&buffer).unwrap();
