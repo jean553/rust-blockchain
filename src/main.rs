@@ -12,6 +12,7 @@ mod blocks;
 mod peers;
 mod help;
 mod display;
+mod message;
 
 use std::io::Read;
 use std::net::{
