@@ -15,6 +15,11 @@ use bincode::serialize;
 
 use block::Block;
 
+use message::{
+    Message,
+    MessageLabel,
+};
+
 /// Displays the blockchain blocks.
 ///
 /// Args:
@@ -44,7 +49,12 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
     /* we voluntary halt the program if serialization and stream buffer write fails;
        in fact, if these problem happen, that means something is clearly wrong */
 
-    let bytes = serialize(&block).unwrap();
+    let message = Message::new(
+        vec![block],
+        MessageLabel::SendBlock,
+    );
+
+    let bytes = serialize(&message).unwrap();
 
     for peer in peers.iter() {
 
