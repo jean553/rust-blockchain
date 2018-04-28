@@ -2,10 +2,13 @@
 
 use block::Block;
 
+#[derive(Serialize, Deserialize, PartialEq)]
 pub enum MessageLabel {
     AskLastBlock,
+    SendBlock,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Message {
     blocks: Vec<Block>,
     label: MessageLabel,
@@ -37,5 +40,14 @@ impl Message {
     /// returns the message label
     pub fn get_label(&self) -> &MessageLabel {
         &self.label
+    }
+
+    /// Getter of the blocks array
+    ///
+    /// Return:
+    ///
+    /// the blocks array
+    pub fn get_blocks(&self) -> &Vec<Block> {
+        &self.blocks
     }
 }
