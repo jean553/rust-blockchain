@@ -4,8 +4,16 @@ use std::net::{
     SocketAddr,
     TcpStream,
 };
+use std::io::Write;
 use std::time::Duration;
 use std::str::FromStr;
+
+use bincode::serialize;
+
+use message::{
+    Message,
+    MessageLabel,
+};
 
 /// Creates a new peer.
 ///
@@ -44,11 +52,21 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
         }
     };
 
-    /* TODO: the peer sends its last block: if the current local chain is empty
-       or if the received last block from the peer is not the same one
-       as the local one, then, the whole local chain is updated;
-       for now, as the stream is immediately deleted, the peer cannot wait for data to read,
-       it causes the peer to terminate */
+    println!("Connected to {}.", address);
+
+    let message = Message::new(
+        Vec::new(),
+        MessageLabel::AskLastBlock,
+    );
+
+    let bytes = serialize(&message).unwrap();
+
+    stream.write(&bytes).unwrap();
+
+    println!("Last block asked to {}.", address);
+
+    /* TODO: receive the last block from the peer and compare it
+       with the local last block and update it if necessary */
 }
 
 /// Displays all the peers.

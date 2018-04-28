@@ -12,6 +12,7 @@ mod blocks;
 mod peers;
 mod help;
 mod display;
+mod message;
 
 use std::io::Read;
 use std::net::{
@@ -47,6 +48,11 @@ use display::{
     set_cursor_into_input,
 };
 
+use message::{
+    Message,
+    MessageLabel,
+};
+
 /// Handle incoming TCP connections with other nodes.
 ///
 /// Args:
@@ -72,15 +78,29 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
         /* blocks until data is received  */
         stream.read_to_end(&mut buffer).unwrap();
 
-        let block: Block = deserialize(&buffer).unwrap();
+        let message: Message = deserialize(&buffer).unwrap();
+        let label = message.get_label();
 
-        let mut chain = chain.lock().unwrap();
-        chain.push(block);
+        let address = stream.peer_addr().unwrap();
 
-        println!(
-            "Block from {} has been added to the chain.",
-            stream.peer_addr().unwrap(),
-        );
+        if label == &MessageLabel::AskLastBlock {
+
+            println!("Last block requested by {}.", address);
+
+            /* TODO: send the last block */
+        }
+        else if label == &MessageLabel::SendBlock {
+
+            let block = message.get_blocks().first().unwrap();
+
+            let mut chain = chain.lock().unwrap();
+            chain.push((*block).clone());
+
+            println!(
+                "Block from {} has been added to the chain.",
+                address,
+            );
+        }
 
         set_cursor_into_input();
     }
