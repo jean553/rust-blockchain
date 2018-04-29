@@ -21,43 +21,49 @@ use message::{
     MessageLabel,
 };
 
-/// Creates a new peer.
+/// Check the given address and returns a stream to communicate with the specified node. Handles errors with output messages.
 ///
 /// Args:
 ///
-/// `peers` - the peers array to modify
-/// `address` - the new ip address (text format) to add
-pub fn create_peer(peers: &mut Vec<String>, address: &str) {
-
-    const PORT: &str = "10000";
-    let full_address = format!("{}:{}", address, PORT);
-
-    let socket_address = match SocketAddr::from_str(&full_address) {
-        Ok(socket_address) => socket_address,
-        Err(_) => {
-            println!("Incorrect address format.");
-            return;
-        }
-    };
-
-    peers.push(address.to_string());
-
-    println!("Address {} added to peers list.", address);
+/// `address` - the node address in format IP:PORT
+///
+/// Returns:
+///
+/// the created TCP stream
+pub fn create_stream(address: &str) -> Option<TcpStream> {
 
     println!("Connecting to {}...", address);
 
-    let mut stream = match TcpStream::connect_timeout(
+    let socket_address = match SocketAddr::from_str(&address) {
+        Ok(socket_address) => socket_address,
+        Err(_) => {
+            println!("Incorrect address format.");
+            return None;
+        }
+    };
+
+    let stream = match TcpStream::connect_timeout(
         &socket_address,
         Duration::from_secs(5),
     ) {
         Ok(stream) => stream,
         Err(_) => {
-            println!("The peer {} has been added but cannot be joined right now.", address);
-            return;
+            println!("The peer cannot be joined.");
+            return None;
         }
     };
 
     println!("Connected to {}.", address);
+
+    Some(stream)
+}
+
+/// Creates a new peer.
+///
+/// Args:
+///
+/// `stream` - the stream opened to the added peer
+pub fn create_peer(mut stream: TcpStream) {
 
     let message = Message::new(
         Vec::new(),
@@ -68,7 +74,6 @@ pub fn create_peer(peers: &mut Vec<String>, address: &str) {
 
     stream.write(&bytes).unwrap();
 
-    println!("Last block asked to {}.", address);
     println!("Waiting for reply...");
 
     /* TODO: explain why a message maximum size is 80 bytes long */

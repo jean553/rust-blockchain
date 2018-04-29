@@ -1,16 +1,11 @@
 //! Blocks routines.
 
-use std::net::{
-    TcpStream,
-    SocketAddr,
-};
-use std::time::Duration;
+use std::net::TcpStream;
 use std::io::Write;
 use std::sync::{
     Arc,
     Mutex,
 };
-use std::str::FromStr;
 
 use bincode::serialize;
 
@@ -20,6 +15,8 @@ use message::{
     Message,
     MessageLabel,
 };
+
+use peers::create_stream;
 
 /// Displays the blockchain blocks.
 ///
@@ -62,29 +59,15 @@ pub fn broadcast_block(peers: &Vec<String>, block: Block) {
         let address_part: Vec<&str> = peer.split(':').collect();
         let address = address_part.get(0).unwrap();
 
-        println!("Connecting to {}...", address);
-
-        let socket_address = match SocketAddr::from_str(&peer) {
-            Ok(socket_address) => socket_address,
-            Err(_) => {
-                println!("Incorrect address format.");
-                return;
-            }
-        };
-
-        let mut stream = match TcpStream::connect_timeout(
-            &socket_address,
-            Duration::from_secs(5),
-        ) {
-            Ok(stream) => stream,
-            Err(_) => {
-                println!("Cannot connect to node {}.", address);
+        let mut stream = match create_stream(&peer) {
+            Some(stream) => stream,
+            None => {
+                println!("Cannot connect to {}.", address);
                 continue;
             }
         };
 
         stream.write(&bytes).unwrap();
-
         println!("Block sent to {}.", address);
     }
 

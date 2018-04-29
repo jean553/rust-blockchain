@@ -36,6 +36,7 @@ use blocks::{
 use peers::{
     create_peer,
     list_peers,
+    create_stream,
 };
 
 use help::list_commands;
@@ -170,7 +171,17 @@ fn main() {
             list_blocks(&chain);
         }
         else if command == ADD_PEER {
-            create_peer(&mut peers, option);
+
+            const PORT: &str = "10000";
+            let full_address = format!("{}:{}", option, PORT);
+            peers.push(full_address.clone());
+
+            println!("Address {} added to peers list.", option);
+
+            let stream = create_stream(&full_address);
+            if stream.is_some() {
+                create_peer(stream.unwrap());
+            }
         }
         else if command == LIST_PEERS {
             list_peers(&peers);
