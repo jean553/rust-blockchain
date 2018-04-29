@@ -38,6 +38,7 @@ use block::Block;
 use blocks::{
     list_blocks,
     broadcast_block,
+    add_block_from_message,
 };
 
 use peers::{
@@ -114,15 +115,9 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
             println!("Replied.");
         }
         else if label == &MessageLabel::SendBlock {
-
-            let block = message.get_blocks().first().unwrap();
-
-            let mut chain = chain.lock().unwrap();
-            chain.push((*block).clone());
-
-            println!(
-                "Block from {} has been added to the chain.",
-                address,
+            add_block_from_message(
+                &chain,
+                &message,
             );
         }
 
