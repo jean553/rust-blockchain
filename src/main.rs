@@ -102,8 +102,10 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
             );
 
             let chain = chain.lock().unwrap();
-            if chain.len() != 0 {
-                message.set_blocks(vec![chain.last().unwrap().clone()]);
+
+            let last_block = chain.last();
+            if last_block.is_some() {
+                message.set_blocks(vec![last_block.unwrap().clone()]);
             }
 
             let bytes = serialize(&message).unwrap();
