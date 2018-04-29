@@ -14,10 +14,7 @@ mod help;
 mod display;
 mod message;
 
-use std::io::{
-    Read,
-    Write,
-};
+use std::io::Read;
 use std::net::{
     TcpListener,
     SocketAddr,
@@ -28,10 +25,7 @@ use std::sync::{
     Mutex,
 };
 
-use bincode::{
-    deserialize,
-    serialize,
-};
+use bincode::deserialize;
 
 use block::Block;
 
@@ -39,6 +33,7 @@ use blocks::{
     list_blocks,
     broadcast_block,
     add_block_from_message,
+    send_last_block_to_stream,
 };
 
 use peers::{
@@ -91,28 +86,11 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
         let message: Message = deserialize(&buffer).unwrap();
         let label = message.get_label();
 
-        let address = stream.peer_addr().unwrap();
-
         if label == &MessageLabel::AskLastBlock {
-
-            println!("Last block requested by {}.", address);
-
-            let mut message = Message::new(
-                Vec::new(),
-                MessageLabel::SendBlock,
+            send_last_block_to_stream(
+                stream,
+                &chain,
             );
-
-            let chain = chain.lock().unwrap();
-
-            let last_block = chain.last();
-            if last_block.is_some() {
-                message.set_blocks(vec![last_block.unwrap().clone()]);
-            }
-
-            let bytes = serialize(&message).unwrap();
-            stream.write(&bytes).unwrap();
-
-            println!("Replied.");
         }
         else if label == &MessageLabel::SendBlock {
             add_block_from_message(
