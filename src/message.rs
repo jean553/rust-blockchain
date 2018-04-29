@@ -50,4 +50,13 @@ impl Message {
     pub fn get_blocks(&self) -> &Vec<Block> {
         &self.blocks
     }
+
+    /// Setter of the blocks array
+    ///
+    /// Args:
+    ///
+    /// `blocks` - the blocks array to set
+    pub fn set_blocks(&mut self, blocks: Vec<Block>) {
+        self.blocks = blocks;
+    }
 }
