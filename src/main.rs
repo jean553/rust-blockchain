@@ -15,10 +15,7 @@ mod display;
 mod message;
 
 use std::io::Read;
-use std::net::{
-    TcpListener,
-    SocketAddr,
-};
+use std::net::TcpListener;
 use std::thread::spawn;
 use std::sync::{
     Arc,
@@ -110,7 +107,7 @@ fn main() {
     println!("Type 'help' to list commands.");
 
     let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
-    let mut peers: Vec<SocketAddr> = Vec::new();
+    let mut peers: Vec<String> = Vec::new();
 
     let listener_chain = chain.clone();
     spawn(|| { handle_incoming_connections(listener_chain) });

@@ -27,7 +27,7 @@ use message::{
 ///
 /// `peers` - the peers array to modify
 /// `address` - the new ip address (text format) to add
-pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
+pub fn create_peer(peers: &mut Vec<String>, address: &str) {
 
     const PORT: &str = "10000";
     let full_address = format!("{}:{}", address, PORT);
@@ -40,7 +40,7 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
         }
     };
 
-    peers.push(socket_address.clone());
+    peers.push(address.to_string());
 
     println!("Address {} added to peers list.", address);
 
@@ -95,9 +95,9 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
 /// Args:
 ///
 /// `peers` - the list of peers to display
-pub fn list_peers(peers: &Vec<SocketAddr>) {
+pub fn list_peers(peers: &Vec<String>) {
 
     for peer in peers.iter() {
-        println!("{}", peer.to_string());
+        println!("{}", peer);
     }
 }

@@ -10,6 +10,7 @@ use std::sync::{
     Arc,
     Mutex,
 };
+use std::str::FromStr;
 
 use bincode::serialize;
 
@@ -44,7 +45,7 @@ pub fn list_blocks(chain: &Arc<Mutex<Vec<Block>>>) {
 ///
 /// `peers` - list of peers
 /// `block` - the block object to send
-pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
+pub fn broadcast_block(peers: &Vec<String>, block: Block) {
 
     /* we voluntary halt the program if serialization and stream buffer write fails;
        in fact, if these problem happen, that means something is clearly wrong */
@@ -58,14 +59,21 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
 
     for peer in peers.iter() {
 
-        let address: String = peer.to_string();
-        let address_part: Vec<&str> = address.split(':').collect();
+        let address_part: Vec<&str> = peer.split(':').collect();
         let address = address_part.get(0).unwrap();
 
         println!("Connecting to {}...", address);
 
+        let socket_address = match SocketAddr::from_str(&peer) {
+            Ok(socket_address) => socket_address,
+            Err(_) => {
+                println!("Incorrect address format.");
+                return;
+            }
+        };
+
         let mut stream = match TcpStream::connect_timeout(
-            &peer,
+            &socket_address,
             Duration::from_secs(5),
         ) {
             Ok(stream) => stream,
