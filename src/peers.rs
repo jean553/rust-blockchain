@@ -33,10 +33,7 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
     let full_address = format!("{}:{}", address, PORT);
 
     let socket_address = match SocketAddr::from_str(&full_address) {
-        Ok(socket_address) => {
-            println!("Address {} added to peers list.", address);
-            socket_address
-        },
+        Ok(socket_address) => socket_address,
         Err(_) => {
             println!("Incorrect address format.");
             return;
@@ -44,6 +41,8 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
     };
 
     peers.push(socket_address.clone());
+
+    println!("Address {} added to peers list.", address);
 
     println!("Connecting to {}...", address);
 
