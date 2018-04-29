@@ -4,11 +4,17 @@ use std::net::{
     SocketAddr,
     TcpStream,
 };
-use std::io::Write;
+use std::io::{
+    Write,
+    Read,
+};
 use std::time::Duration;
 use std::str::FromStr;
 
-use bincode::serialize;
+use bincode::{
+    deserialize,
+    serialize,
+};
 
 use message::{
     Message,
@@ -64,9 +70,25 @@ pub fn create_peer(peers: &mut Vec<SocketAddr>, address: &str) {
     stream.write(&bytes).unwrap();
 
     println!("Last block asked to {}.", address);
+    println!("Waiting for reply...");
 
-    /* TODO: receive the last block from the peer and compare it
-       with the local last block and update it if necessary */
+    /* TODO: explain why a message maximum size is 80 bytes long */
+    const ONE_BLOCK_MESSAGE_MAX_LENGTH: usize = 80;
+
+    let mut buffer: Vec<u8> = vec![0; ONE_BLOCK_MESSAGE_MAX_LENGTH];
+    stream.read(&mut buffer).expect("Received message is too long.");
+
+    let message: Message = deserialize(&buffer).unwrap();
+
+    if message.get_blocks().is_empty() {
+        println!("No block returned.");
+        return;
+    }
+
+    println!("One block has been received.");
+
+    /* TODO: compare blocks in order to know
+       if the local one is the same as the received one */
 }
 
 /// Displays all the peers.

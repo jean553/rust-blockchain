@@ -14,7 +14,10 @@ mod help;
 mod display;
 mod message;
 
-use std::io::Read;
+use std::io::{
+    Read,
+    Write,
+};
 use std::net::{
     TcpListener,
     SocketAddr,
@@ -25,7 +28,10 @@ use std::sync::{
     Mutex,
 };
 
-use bincode::deserialize;
+use bincode::{
+    deserialize,
+    serialize,
+};
 
 use block::Block;
 
@@ -70,13 +76,16 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
            of the main text area (so the cursor position
            must not be modified) */
 
+        clear_screen();
         set_cursor_into_logs();
 
         let mut stream = income.unwrap();
-        let mut buffer: Vec<u8> = Vec::new();
+
+        const MESSAGE_MAX_LENGTH: usize = 20;
+        let mut buffer: Vec<u8> = vec![0; MESSAGE_MAX_LENGTH];
 
         /* blocks until data is received  */
-        stream.read_to_end(&mut buffer).unwrap();
+        stream.read(&mut buffer).expect("Received message is too long.");
 
         let message: Message = deserialize(&buffer).unwrap();
         let label = message.get_label();
@@ -87,7 +96,22 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
 
             println!("Last block requested by {}.", address);
 
-            /* TODO: send the last block */
+            let mut message = Message::new(
+                Vec::new(),
+                MessageLabel::SendBlock,
+            );
+
+            let chain = chain.lock().unwrap();
+
+            let last_block = chain.last();
+            if last_block.is_some() {
+                message.set_blocks(vec![last_block.unwrap().clone()]);
+            }
+
+            let bytes = serialize(&message).unwrap();
+            stream.write(&bytes).unwrap();
+
+            println!("Replied.");
         }
         else if label == &MessageLabel::SendBlock {
 
