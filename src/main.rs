@@ -15,10 +15,7 @@ mod display;
 mod message;
 
 use std::io::Read;
-use std::net::{
-    TcpListener,
-    SocketAddr,
-};
+use std::net::TcpListener;
 use std::thread::spawn;
 use std::sync::{
     Arc,
@@ -39,6 +36,7 @@ use blocks::{
 use peers::{
     create_peer,
     list_peers,
+    create_stream,
 };
 
 use help::list_commands;
@@ -110,7 +108,7 @@ fn main() {
     println!("Type 'help' to list commands.");
 
     let chain: Arc<Mutex<Vec<Block>>> = Arc::new(Mutex::new(Vec::new()));
-    let mut peers: Vec<SocketAddr> = Vec::new();
+    let mut peers: Vec<String> = Vec::new();
 
     let listener_chain = chain.clone();
     spawn(|| { handle_incoming_connections(listener_chain) });
@@ -173,7 +171,17 @@ fn main() {
             list_blocks(&chain);
         }
         else if command == ADD_PEER {
-            create_peer(&mut peers, option);
+
+            const PORT: &str = "10000";
+            let full_address = format!("{}:{}", option, PORT);
+            peers.push(full_address.clone());
+
+            println!("Address {} added to peers list.", option);
+
+            let stream = create_stream(&full_address);
+            if stream.is_some() {
+                create_peer(stream.unwrap());
+            }
         }
         else if command == LIST_PEERS {
             list_peers(&peers);

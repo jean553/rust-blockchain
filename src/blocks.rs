@@ -1,10 +1,6 @@
 //! Blocks routines.
 
-use std::net::{
-    TcpStream,
-    SocketAddr,
-};
-use std::time::Duration;
+use std::net::TcpStream;
 use std::io::Write;
 use std::sync::{
     Arc,
@@ -19,6 +15,8 @@ use message::{
     Message,
     MessageLabel,
 };
+
+use peers::create_stream;
 
 /// Displays the blockchain blocks.
 ///
@@ -44,7 +42,7 @@ pub fn list_blocks(chain: &Arc<Mutex<Vec<Block>>>) {
 ///
 /// `peers` - list of peers
 /// `block` - the block object to send
-pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
+pub fn broadcast_block(peers: &Vec<String>, block: Block) {
 
     /* we voluntary halt the program if serialization and stream buffer write fails;
        in fact, if these problem happen, that means something is clearly wrong */
@@ -58,25 +56,18 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
 
     for peer in peers.iter() {
 
-        let address: String = peer.to_string();
-        let address_part: Vec<&str> = address.split(':').collect();
+        let address_part: Vec<&str> = peer.split(':').collect();
         let address = address_part.get(0).unwrap();
 
-        println!("Connecting to {}...", address);
-
-        let mut stream = match TcpStream::connect_timeout(
-            &peer,
-            Duration::from_secs(5),
-        ) {
-            Ok(stream) => stream,
-            Err(_) => {
-                println!("Cannot connect to node {}.", address);
+        let mut stream = match create_stream(&peer) {
+            Some(stream) => stream,
+            None => {
+                println!("Cannot connect to {}.", address);
                 continue;
             }
         };
 
         stream.write(&bytes).unwrap();
-
         println!("Block sent to {}.", address);
     }
 
