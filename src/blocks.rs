@@ -82,3 +82,22 @@ pub fn broadcast_block(peers: &Vec<SocketAddr>, block: Block) {
 
     println!("Block creation broadcast terminated.");
 }
+
+/// Adds one block to the chain from a received message. Takes the first block of the chain. Panics if an error occurs.
+///
+/// Args:
+///
+/// `chain` - the chain to update
+/// `message` - the message from where extract the unique block
+pub fn add_block_from_message(
+    chain: &Arc<Mutex<Vec<Block>>>,
+    message: &Message,
+) {
+
+    let block = message.get_blocks().first().unwrap();
+
+    let mut chain = chain.lock().unwrap();
+    chain.push((*block).clone());
+
+    println!("Received block added into the chain.");
+}
