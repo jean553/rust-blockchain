@@ -101,3 +101,34 @@ pub fn add_block_from_message(
 
     println!("Received block added into the chain.");
 }
+
+/// Sends last block from local chain to the given stream. Panics if an error occurs.
+///
+/// Args:
+///
+/// `stream` - the stream where data must be written
+/// `chain` - the chain to use
+pub fn send_last_block_to_stream(
+    mut stream: TcpStream,
+    chain: &Arc<Mutex<Vec<Block>>>,
+) {
+
+    println!("Last block requested.");
+
+    let mut message = Message::new(
+        Vec::new(),
+        MessageLabel::SendBlock,
+    );
+
+    let chain = chain.lock().unwrap();
+
+    let last_block = chain.last();
+    if last_block.is_some() {
+        message.set_blocks(vec![last_block.unwrap().clone()]);
+    }
+
+    let bytes = serialize(&message).unwrap();
+    stream.write(&bytes).unwrap();
+
+    println!("Last block sent.");
+}
