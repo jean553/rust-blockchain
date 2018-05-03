@@ -4,7 +4,7 @@ use block::Block;
 
 #[derive(Serialize, Deserialize, PartialEq)]
 pub enum MessageLabel {
-    AskLastBlock,
+    AskForAllBlocks,
     SendBlock,
 }
 

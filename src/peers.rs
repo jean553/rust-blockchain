@@ -67,7 +67,7 @@ pub fn create_peer(mut stream: TcpStream) {
 
     let message = Message::new(
         Vec::new(),
-        MessageLabel::AskLastBlock,
+        MessageLabel::AskForAllBlocks,
     );
 
     let bytes = serialize(&message).unwrap();

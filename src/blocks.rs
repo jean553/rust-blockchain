@@ -93,7 +93,7 @@ pub fn add_block_from_message(
     println!("Received block added into the chain.");
 }
 
-/// Sends last block from local chain to the given stream. Panics if an error occurs.
+/// Sends the local chain to another node through the given stream.
 ///
 /// Args:
 ///
@@ -113,9 +113,8 @@ pub fn send_last_block_to_stream(
 
     let chain = chain.lock().unwrap();
 
-    let last_block = chain.last();
-    if last_block.is_some() {
-        message.set_blocks(vec![last_block.unwrap().clone()]);
+    if !chain.is_empty() {
+        message.set_blocks(chain.clone());
     }
 
     let bytes = serialize(&message).unwrap();
