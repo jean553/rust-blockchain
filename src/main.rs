@@ -34,7 +34,7 @@ use blocks::{
 };
 
 use peers::{
-    create_peer,
+    get_chain_from_stream,
     list_peers,
     create_stream,
 };
@@ -182,7 +182,16 @@ fn main() {
 
             let stream = create_stream(&full_address);
             if stream.is_some() {
-                create_peer(stream.unwrap());
+                let remote_chain = get_chain_from_stream(stream.unwrap());
+
+                let mut chain = chain.lock().unwrap();
+
+                if remote_chain.len() > chain.len() {
+                    *chain = remote_chain.clone();
+                    println!("The local chain is outdated compared to the remote one, replaced.");
+                } else {
+                    println!("The local chain is up-to-date compared to the remote one.");
+                }
             }
         }
         else if command == LIST_PEERS {

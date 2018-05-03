@@ -21,6 +21,8 @@ use message::{
     MessageLabel,
 };
 
+use block::Block;
+
 /// Check the given address and returns a stream to communicate with the specified node. Handles errors with output messages.
 ///
 /// Args:
@@ -63,7 +65,11 @@ pub fn create_stream(address: &str) -> Option<TcpStream> {
 /// Args:
 ///
 /// `stream` - the stream opened to the added peer
-pub fn create_peer(mut stream: TcpStream) {
+///
+/// Returns:
+///
+/// the received remote chain
+pub fn get_chain_from_stream(mut stream: TcpStream) -> Vec<Block> {
 
     let message = Message::new(
         Vec::new(),
@@ -83,16 +89,7 @@ pub fn create_peer(mut stream: TcpStream) {
     stream.read(&mut buffer).expect("Received message is too long.");
 
     let message: Message = deserialize(&buffer).unwrap();
-
-    if message.get_blocks().is_empty() {
-        println!("No block returned.");
-        return;
-    }
-
-    println!("One block has been received.");
-
-    /* TODO: compare blocks in order to know
-       if the local one is the same as the received one */
+    message.get_blocks().clone()
 }
 
 /// Displays all the peers.
