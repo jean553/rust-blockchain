@@ -53,6 +53,8 @@ use message::{
     MessageLabel,
 };
 
+const LISTENING_PORT: &str = "10000";
+
 /// Handle incoming TCP connections with other nodes.
 ///
 /// Args:
@@ -60,7 +62,8 @@ use message::{
 /// `chain` - the chain to manipulate
 fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
 
-    let listener = TcpListener::bind("0.0.0.0:10000").unwrap();
+    let address = format!("0.0.0.0:{}", LISTENING_PORT);
+    let listener = TcpListener::bind(address).unwrap();
 
     /* blocks until data is received */
     for income in listener.incoming() {
@@ -172,8 +175,7 @@ fn main() {
         }
         else if command == ADD_PEER {
 
-            const PORT: &str = "10000";
-            let full_address = format!("{}:{}", option, PORT);
+            let full_address = format!("{}:{}", option, LISTENING_PORT);
             peers.push(full_address.clone());
 
             println!("Address {} added to peers list.", option);
