@@ -87,7 +87,7 @@ fn handle_incoming_connections(chain: Arc<Mutex<Vec<Block>>>) {
         let message: Message = deserialize(&buffer).unwrap();
         let label = message.get_label();
 
-        if label == &MessageLabel::AskLastBlock {
+        if label == &MessageLabel::AskForAllBlocks {
             send_last_block_to_stream(
                 stream,
                 &chain,
